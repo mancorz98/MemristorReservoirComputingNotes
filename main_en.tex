@@ -1,0 +1,211 @@
+
+\documentclass[11pt, oneside]{article} 
+\usepackage{amsmath, amsthm, amssymb, wasysym, verbatim, bbm, color, geometry}
+\usepackage{amsfonts}
+\usepackage{csquotes}
+% \usepackage{polski}
+\usepackage[english]{babel}
+\usepackage[nottoc]{tocbibind}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{circuitikz}
+% \ctikzset{current arrow scale=1.5} 
+\usepackage{hyperref} % Loads the hyperref package for hyperlinks
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[T1]{fontenc}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsfonts}
+\usepackage{mathbbol}
+
+\catcode`_=\active
+\def_#1{\sb{\mathrm{#1}}}
+
+
+\pgfplotsset{compat=1.18} % Set the compatibility level for pg
+\usetikzlibrary{shapes.geometric, arrows, positioning, fit, backgrounds}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=cyan,
+    urlcolor=blue!60,
+    breaklinks=true,
+}
+
+
+
+
+
+\newcommand{\workSource}[2]{Text available at: \href{#1}{#2}}
+
+
+
+\DeclareMathSizes{12}{12}{10}{8}
+\makeatletter
+\renewcommand\normalsize{%
+\@setfontsize\normalsize{12pt}{13.5pt}% Will look incredibly crabbed if line height is too small
+\abovedisplayskip 10\p@ \@plus2\p@ \@minus5\p@%
+\abovedisplayshortskip \z@ \@plus2\p@%
+\belowdisplayshortskip 5\p@ \@plus2\p@ \@minus3\p@%
+\belowdisplayskip \abovedisplayskip%
+\let\@listi\@listI%
+}
+\normalsize  
+\makeatother
+
+\newcommand{\der}{{\rm d}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\C}{\mathcal{C}}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\Ron}{R_{\rm ON}}
+\newcommand{\Roff}{R_{\rm OFF}}
+\newcommand{\von}{V_{\rm ON}}
+\newcommand{\voff}{V_{\rm OFF}}
+\newcommand{\q}{q}
+\newcommand{\ua}{v}
+\newcommand{\ia}{i}
+\newcommand{\phia}{\varphi}
+\newcommand{\xw}{x}
+\newcommand{\dert}[1]{\frac{{\rm d} {#1}}{{\rm d} t} }
+\newcommand{\inv}[1]{\frac{1}{#1} }
+\newcommand{\equal}{=}
+
+
+\usepackage[style=numeric, 
+            backend=biber,
+           ]{biblatex}
+           
+\addbibresource{bibliography.bib} % Replace with your .bib file name
+
+\geometry{tmargin=.75in, bmargin=.75in, lmargin=.75in, rmargin = .75in}  
+
+% \usepackage{fontspec}
+% \setmainfont[]{Palatino}
+
+\newcommand{\Cdot}{\boldsymbol{\cdot}}
+
+\newtheorem{thm}{Theorem}
+\newtheorem{defn}{Definition}
+\newtheorem{conv}{Convention}
+\newtheorem{rem}{Remark}
+\newtheorem{lem}{Lemma}
+\newtheorem{cor}{Corollary}
+
+
+\title{Reservoir computing}
+\author{Karol Bednarz}
+% \date{Rok akademicki 2024--2025}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\vspace{.25in}
+
+\newcommand{\Todo}[1]{\textcolor                {red}{\textbf{TODO:} #1}}
+
+\section{Introduction}
+
+
+\subsection{Principles of reservoir computing}
+The state of reservoir dynamics can be expressed as:
+\begin{equation}
+    h_t = f \big((1-k) \cdot u_t \cdot W_{in} + k\cdot h_{\mathrm{t-1}} \cdot W_h + y_{\mathrm{t-1}} \cdot W_{1b} + b \big)
+\end{equation}
+Where: 
+\begin{itemize}[noitemsep, leftmargin=4cm, label={}]
+    \item [$h_{t-1}$] -- are the reservoir state respectively, from the previous time step,
+    \item [$u_t$] -- is the observed data at time step $t$,
+    \item [$y_{t-1}$] -- is the the predicted output state $t-1$,
+    \item [$W_{in} \in \mathbb{R}^{N_u \times N_h}$] -- is the input weight matrix,
+    \item [$W_h \in \mathbb{R}^{N_h \times N_h}$] -- is the internal weight matrix,
+    \item [$W_{1b} \in \mathbb{R}^{N_h \times N_y}$] -- is the output fedback weight matrix,
+    \item [$b \in \mathbb{R}^{N_h}$] -- is the bias vector.
+    \item [$f$] -- is the activation function, typically $\tanh$ or $\mathrm{sigmoid}$,
+    \item [$k$] -- is the leaking rate, typically $k \in [0.1, 0.3]$.
+\end{itemize}
+
+
+With the computed reservoir dynamics, the output can be then obtained by:
+\begin{equation}
+    y_t = h_t \cdot W_{\mathrm{out}}
+\end{equation}
+Where:
+\begin{itemize}[noitemsep, leftmargin=4cm, label={}]
+    \item [$W_{\mathrm{out}} \in \mathbb{R}^{N_h \times N_y}$] -- is the output weight matrix.
+\end{itemize}
+
+\subsection{Echo state property}
+
+Any system that changes in a nonlinear way can work as the reservoir. However, starting a nonlinear system with random connection strengths creates problems.
+The reservoir is a system that feeds its outputs back into itself. This can make it unstable if the connection strengths aren't set up correctly. For example, if the internal connections are too strong, the system might get stuck giving the same output regardless of what input it receives. The random connection strengths must be chosen so the system doesn't grow out of control.
+For the system to work well, it must follow something called the "echo state property." This rule ensures that the reservoir's behavior eventually depends on the input signal rather than just its starting conditions.
+To meet this requirement, the internal connection matrix $W_h$ is first set up using random values between -1 and 1. This matrix is then adjusted one time according to the echo state property rule:
+
+\begin{align}
+    W'_h &= \alpha \odot {W_h} \\
+    W_h^{\dagger} &= \frac{\rho  W_h}{\left\lvert \lambda_{max}(W_h) \right\rvert }
+\end{align}
+Where:
+\begin{itemize}[noitemsep, leftmargin=4cm, label={}]
+    \item [$\rho \in (0,1)$] -- is the spectral radius, typically $\rho \in [0.9, 1]$
+    \item [$\lambda_{max}(W_h)$] -- is the largest eigenvalue of $W_h $.
+    \item[$\alpha \in (0,1)$] -- is the sparsity coefficient, typically $\alpha \in [0.1, 0.3]$.
+\end{itemize}
+The spectral radius is a parameter that determines the amount of nonlinear interaction of input components through time.
+
+Due to the recursive nature of the reservoir layer,
+such dynamics reflect trajectories of the past historical input—the short-term memory (known as the fading memory). As another critical property for computing the RC principle, short-term memory can be
+quantitative measured by the coefficient of memory
+capacity
+
+
+\begin{equation}
+    MC = \sum_{k=1}^{\infty} MC_k =
+    \sum_{k=1}^{\infty} d^2(u_{t-k}, y_t) =  \sum_{k=1}^{\infty} \frac{\mathrm{cov}^2(u_{t-k}, y_t)}{\sigma^2(u_t) \sigma^2(y_t)}
+\end{equation}
+
+Where:
+\begin{itemize}[noitemsep, leftmargin=4cm, label={}]
+    \item [$d^2(u_{t-k}, y_t)$] -- is the square of the correlation coefficient between the output $y_t$ and the input $u_{t-k }$ with a delay of $k$ time steps,
+\end{itemize}
+
+According to the Lyapunov stability analysis, a large memory capacity is needed to compute the RC principle, which can be achieved at the asymptotically stable region.
+
+
+\section{Learning algorithm}
+The training of the reservoir computing model involves adjusting only the output weights $W_{\mathrm{out}}$. The input weights $W_{in}$, internal weights $W_h$, and feedback weights $W_{1b}$ are typically initialized randomly and remain fixed during training. The training process can be summarized in the following steps:
+
+\begin{equation}
+    Y = H \cdot W_{out}
+\end{equation}
+Where:
+\begin{itemize}[noitemsep, leftmargin=4cm, label={}]
+    \item [$Y \in \mathbb{R}^{T \times N_y}$] -- is the matrix of target outputs for all time steps,
+    \item [$H \in \mathbb{R}^{T \times N_h}$] -- is the matrix of reservoir states for all time steps,
+    \item [$T$] -- is the total number of time steps.
+\end{itemize}
+
+In general, the $W_{out}$ can be directly obtained by calculating the Moore-Penrose pseudoinverse of the reservoir states matrix H with respect to the target outputs matrix Y:
+
+\begin{equation}
+    W_{out} = Y \cdot H^{\dagger} \cdot (H \cdot H^{\dagger} + \eta I)^{-1}
+\end{equation}
+Where: 
+\begin{itemize}[noitemsep, leftmargin=2cm, label={}]
+    \item [$H^{\dagger}$] -- is the Moore-Penrose pseudoinverse of matrix H,
+    \item [$\eta$] -- is the regularization parameter, typically $\eta \in [10^{-6}, 10^{-2}]$,
+    \item [$I$] -- is the identity matrix of size $N_h \times N_h$.
+\end{itemize}
+
+
+\end{document}
+

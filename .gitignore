@@ -1,0 +1,46 @@
+# LaTeX intermediate and output files
+*.aux
+*.bbl
+*.blg
+*.brf
+*.idx
+*.ilg
+*.ind
+*.lof
+*.log
+*.lot
+*.out
+*.toc
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.run.xml
+*.bcf
+
+# Backup files
+*~
+*.bak
+*.backup
+*.sav
+
+# Editor swap files
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+
+# VS Code settings
+.vscode/
+
+# Mac OS files
+.DS_Store
+
+# Latexmk specific
+latex.out
