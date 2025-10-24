@@ -44,3 +44,6 @@
 
 # Latexmk specific
 latex.out
+
+
+*synctex*
