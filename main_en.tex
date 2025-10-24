@@ -12,6 +12,7 @@
 \usepackage{graphicx}
 \usepackage{circuitikz}
 \usepackage{listings}
+\usepackage{float}
 
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -279,7 +280,48 @@ Based on~\cite{Maass2011, Deckers2022}.
     \label{fig:lsm}
 \end{figure}
 
+\section{Next generation reservoir computing}
+Based on \cite{Gauthier2021}.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figs/next-generation.png}
+    \caption{ A traditional RC is implicit in an NG-RC. (top) A traditional RC processes time-series data associated with a strange attractor (blue, middle left)
+using an artificial recurrent neural network. The forecasted strange attractor (red, middle right) is a linear weight of the reservoir states. (bottom) The NGRC performs a forecast using a linear weight of time-delay states (two times shown here) of the time series data and nonlinear functionals of this data
+(quadratic functional shown here).}
+    \label{fig:ng-rc}
+\end{figure}
+
+The reservoir is a
+dynamic system whose dynamics can be represented by:
+\begin{equation}
+    \mathbf{r}_{i+1} = (1 - \gamma) \mathbf{r}_i + \gamma f \big(\mathbf{A} r_i + \mathbf{W}_{in} \mathbf{X}_i + b \big)
+\end{equation}
+
+Where: 
+
+\( r_i = [r_i^1, r_i^2, \ldots, r_i^N]^T \in \mathbb{R}^{N \times 1} \) is the reservoir state at time step \(i\),
+
+The output layer expresses the RC output \(\mathbf{Y}_{i+1}\) as a linear
+transformation of a feature vector \(\mathbf{O}_{total,i+1}\), constructed from the
+reservoir state \(\mathbf{r}_{i+1}\), through the relation:
+\begin{equation}
+    \mathbf{Y}_{i+1} = \mathbf{W}_{out} \mathbf{O}_{total,i+1}
+\end{equation}
+
+Where:
+\begin{itemize}[noitemsep, leftmargin=4cm, label={}]
+    \item [\(\mathbf{O}_{total,i+1} \in \mathbb{R}^{M \times 1}\)] -- is the feature vector at time step \(i+1\),
+    \item [\(\mathbf{W}_{out} \in \mathbb{R}^{p \times M}\)] -- is the output weight matrix,
+    \item [\(M\)] -- is the size of the feature vector.
+\end{itemize}
+
+
+The RC is trained using supervised training via regularized least-squares regression. Here, the training data points generate a block of data contained in \(\mathbf{O}_{total}\) and we match \(\mathbf{Y}\) to the desired output \(\mathbf{Y}_d\) in a least-square sense using Tikhonov regularization so that \(\mathbf{W}_{out}\) is given by
+
+\begin{equation}
+    \mathbf{W}_{out} = \mathbf{Y}_d \mathbf{O}_{total}^T (\mathbf{O}_{total} \mathbf{O}_{total}^T + \alpha \mathbf{I})^{-1}
+\end{equation}
 
 \clearpage
 \section{Sample implementation in Python}
