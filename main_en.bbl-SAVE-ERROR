@@ -1,0 +1,256 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global/global}
+    \entry{Bai2023}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=fc115b28fb1fb6051688fdb0699e9193}{%
+           family={Bai},
+           familyi={B\bibinitperiod},
+           given={Kang\bibnamedelima Jun},
+           giveni={K\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=2857d0b5c0292eb0d72986b23b003a75}{%
+           family={Thiem},
+           familyi={T\bibinitperiod},
+           given={Clare},
+           giveni={C\bibinitperiod}}}%
+        {{hash=31fa692407835852b5729d651f5007e6}{%
+           family={Lombardi},
+           familyi={L\bibinitperiod},
+           given={Jack},
+           giveni={J\bibinitperiod}}}%
+        {{hash=c7d42f4c89b0ff2b61d1acdf6587d14d}{%
+           family={Liang},
+           familyi={L\bibinitperiod},
+           given={Yibin},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=b1b52272bd9dbc18d6be06cd9f87fd11}{%
+           family={Yi},
+           familyi={Y\bibinitperiod},
+           given={Yang},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \list{publisher}{2}{%
+        {Institute of Electrical}%
+        {Electronics Engineers (IEEE)}%
+      }
+      \strng{namehash}{97794e5ff711bbcdbb8b0efda0d0d8f5}
+      \strng{fullhash}{08f54df77e65345da2b40af0f7343696}
+      \strng{fullhashraw}{08f54df77e65345da2b40af0f7343696}
+      \strng{bibnamehash}{97794e5ff711bbcdbb8b0efda0d0d8f5}
+      \strng{authorbibnamehash}{97794e5ff711bbcdbb8b0efda0d0d8f5}
+      \strng{authornamehash}{97794e5ff711bbcdbb8b0efda0d0d8f5}
+      \strng{authorfullhash}{08f54df77e65345da2b40af0f7343696}
+      \strng{authorfullhashraw}{08f54df77e65345da2b40af0f7343696}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1558-0830}
+      \field{journaltitle}{IEEE Circuits and Systems Magazine}
+      \field{number}{4}
+      \field{title}{Design Strategies and Applications of Reservoir Computing: Recent Trends and Prospects [Feature]}
+      \field{volume}{23}
+      \field{year}{2023}
+      \field{pages}{10\bibrangedash 33}
+      \range{pages}{24}
+      \verb{doi}
+      \verb 10.1109/mcas.2023.3325496
+      \endverb
+      \verb{urlraw}
+      \verb http://dx.doi.org/10.1109/MCAS.2023.3325496
+      \endverb
+      \verb{url}
+      \verb http://dx.doi.org/10.1109/MCAS.2023.3325496
+      \endverb
+    \endentry
+    \entry{Grigoryeva2016}{inproceedings}{}{}
+      \name{author}{4}{}{%
+        {{hash=ce4d732e6f75f77bd4e613b2a01a7ae5}{%
+           family={Grigoryeva},
+           familyi={G\bibinitperiod},
+           given={Lyudmila},
+           giveni={L\bibinitperiod}}}%
+        {{hash=f3fc212bc3dfe51b5751de21076f54c4}{%
+           family={Henriques},
+           familyi={H\bibinitperiod},
+           given={Julie},
+           giveni={J\bibinitperiod}}}%
+        {{hash=7da1833fb1f90eb7a07410d8359d17ae}{%
+           family={Larger},
+           familyi={L\bibinitperiod},
+           given={Laurent},
+           giveni={L\bibinitperiod}}}%
+        {{hash=03135b0e2b87fd267cad51011c9d4236}{%
+           family={Ortega},
+           familyi={O\bibinitperiod},
+           given={Juan-Pablo},
+           giveni={J\bibinithyphendelim P\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {IEEE}%
+      }
+      \strng{namehash}{276355faf6126edd3610593096778996}
+      \strng{fullhash}{9d663f6348410efd25d8942faf2f672d}
+      \strng{fullhashraw}{9d663f6348410efd25d8942faf2f672d}
+      \strng{bibnamehash}{276355faf6126edd3610593096778996}
+      \strng{authorbibnamehash}{276355faf6126edd3610593096778996}
+      \strng{authornamehash}{276355faf6126edd3610593096778996}
+      \strng{authorfullhash}{9d663f6348410efd25d8942faf2f672d}
+      \strng{authorfullhashraw}{9d663f6348410efd25d8942faf2f672d}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{2016 IEEE Intl Conference on Computational Science and Engineering (CSE) and IEEE Intl Conference on Embedded and Ubiquitous Computing (EUC) and 15th Intl Symposium on Distributed Computing and Applications for Business Engineering (DCABES)}
+      \field{month}{8}
+      \field{title}{Time-Delay Reservoir Computers and High-Speed Information Processing Capacity}
+      \field{year}{2016}
+      \field{pages}{492\bibrangedash 495}
+      \range{pages}{4}
+      \verb{doi}
+      \verb 10.1109/cse-euc-dcabes.2016.230
+      \endverb
+      \verb{urlraw}
+      \verb http://dx.doi.org/10.1109/CSE-EUC-DCABES.2016.230
+      \endverb
+      \verb{url}
+      \verb http://dx.doi.org/10.1109/CSE-EUC-DCABES.2016.230
+      \endverb
+    \endentry
+    \entry{Ortn2015}{article}{}{}
+      \name{author}{8}{}{%
+        {{hash=348ad9e9e44ef877b47ef7f573b6e04c}{%
+           family={Ortín},
+           familyi={O\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=f8deff4e02af3ba7c410f8e8012ad58d}{%
+           family={Soriano},
+           familyi={S\bibinitperiod},
+           given={M.\bibnamedelimi C.},
+           giveni={M\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+        {{hash=63e35dcad43cbbc86247cbca7b8bc3ae}{%
+           family={Pesquera},
+           familyi={P\bibinitperiod},
+           given={L.},
+           giveni={L\bibinitperiod}}}%
+        {{hash=56e962c2c78dc37f9fa771b3c702156b}{%
+           family={Brunner},
+           familyi={B\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+        {{hash=a86c14b223331cea79356270d755679c}{%
+           family={San-Martín},
+           familyi={S\bibinithyphendelim M\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+        {{hash=6e7a840b9688d6bda563b7d99ea2b1a2}{%
+           family={Fischer},
+           familyi={F\bibinitperiod},
+           given={I.},
+           giveni={I\bibinitperiod}}}%
+        {{hash=eacc3d41affdc7b5da8ef5e7a63705af}{%
+           family={Mirasso},
+           familyi={M\bibinitperiod},
+           given={C.\bibnamedelimi R.},
+           giveni={C\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=229c818e74f119df69fc332e30cc6088}{%
+           family={Gutiérrez},
+           familyi={G\bibinitperiod},
+           given={J.\bibnamedelimi M.},
+           giveni={J\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \list{publisher}{2}{%
+        {Springer Science}%
+        {Business Media LLC}%
+      }
+      \strng{namehash}{6b01fd532750e6443ccadbf521f8adbc}
+      \strng{fullhash}{9177cde3543b1ddf4ebe7c14aee9c550}
+      \strng{fullhashraw}{9177cde3543b1ddf4ebe7c14aee9c550}
+      \strng{bibnamehash}{6b01fd532750e6443ccadbf521f8adbc}
+      \strng{authorbibnamehash}{6b01fd532750e6443ccadbf521f8adbc}
+      \strng{authornamehash}{6b01fd532750e6443ccadbf521f8adbc}
+      \strng{authorfullhash}{9177cde3543b1ddf4ebe7c14aee9c550}
+      \strng{authorfullhashraw}{9177cde3543b1ddf4ebe7c14aee9c550}
+      \field{sortinit}{O}
+      \field{sortinithash}{2cd7140a07aea5341f9e2771efe90aae}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2045-2322}
+      \field{journaltitle}{Scientific Reports}
+      \field{month}{10}
+      \field{number}{1}
+      \field{title}{A Unified Framework for Reservoir Computing and Extreme Learning Machines based on a Single Time-delayed Neuron}
+      \field{volume}{5}
+      \field{year}{2015}
+      \verb{doi}
+      \verb 10.1038/srep14945
+      \endverb
+      \verb{urlraw}
+      \verb http://dx.doi.org/10.1038/srep14945
+      \endverb
+      \verb{url}
+      \verb http://dx.doi.org/10.1038/srep14945
+      \endverb
+    \endentry
+    \entry{Parlitz2024}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=a5b676e2204c687f98d33fafeb450801}{%
+           family={Parlitz},
+           familyi={P\bibinitperiod},
+           given={Ulrich},
+           giveni={U\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Frontiers Media SA}%
+      }
+      \strng{namehash}{a5b676e2204c687f98d33fafeb450801}
+      \strng{fullhash}{a5b676e2204c687f98d33fafeb450801}
+      \strng{fullhashraw}{a5b676e2204c687f98d33fafeb450801}
+      \strng{bibnamehash}{a5b676e2204c687f98d33fafeb450801}
+      \strng{authorbibnamehash}{a5b676e2204c687f98d33fafeb450801}
+      \strng{authornamehash}{a5b676e2204c687f98d33fafeb450801}
+      \strng{authorfullhash}{a5b676e2204c687f98d33fafeb450801}
+      \strng{authorfullhashraw}{a5b676e2204c687f98d33fafeb450801}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2297-4687}
+      \field{journaltitle}{Frontiers in Applied Mathematics and Statistics}
+      \field{month}{3}
+      \field{title}{Learning from the past: reservoir computing using delayed variables}
+      \field{volume}{10}
+      \field{year}{2024}
+      \verb{doi}
+      \verb 10.3389/fams.2024.1221051
+      \endverb
+      \verb{urlraw}
+      \verb http://dx.doi.org/10.3389/fams.2024.1221051
+      \endverb
+      \verb{url}
+      \verb http://dx.doi.org/10.3389/fams.2024.1221051
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
