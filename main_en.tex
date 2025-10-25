@@ -323,6 +323,46 @@ The RC is trained using supervised training via regularized least-squares regres
     \mathbf{W}_{out} = \mathbf{Y}_d \mathbf{O}_{total}^T (\mathbf{O}_{total} \mathbf{O}_{total}^T + \alpha \mathbf{I})^{-1}
 \end{equation}
 
+A different approach to RC is to move the nonlinearity from the reservoir to the output layer. In this case, the reservoir nodes are chosen to have a linear activation function \(f(\mathbf{r}) = \mathbf{r}\), while the feature vector \(\mathbf{O}_{total}\) becomes nonlinear. A simple example of such RC is to extend the standard linear feature vector to include the squared values of all nodes, which are obtained through the Hadamard product \( \mathbf{r} \odot \mathbf{r} =  [r_1^2, r_2^2, \ldots, r_N^2]^T \)
+
+\begin{equation}
+    \mathbf{O}_{total} = \mathbf{r} \oplus (\mathbf{r} \odot \mathbf{r}) = [r_1, r_2, \ldots, r_N, r_1^2, r_2^2, \ldots, r_N^2]^T
+\end{equation}
+Where:
+\begin{itemize}[noitemsep, leftmargin=4cm, label={}]
+    \item [\(\oplus\)] -- is the concatenation operator.
+    
+\end{itemize}
+Here, \(\mathbf{O}_{total} = c \cdot \mathbf{O}_{linear} \oplus \mathbf{O}_{nonlinear}\), where \(c\) is a constant
+and \(\mathbf{O}_{nonlinear}\) is a nonlinear part of the feature vector. Like a traditional RC, the output is obtained using these features.
+
+The linear features \(\mathbf{O}_{linear,i}\) at time step \(i\) is composed of observations of the input vector \(\mathbf{X}\) at the current and at \(k-1\) previous times steps spaced by \(s\), where \((s-1)\) is the number of skipped steps between consecutive observations. If \(\mathbf{X}_i = [x_{1,i}, x_{2,i}, \ldots, x_{d,i}]^T\) is a \(d\)-dimensional vector, \(\mathbf{O}_{linear,i}\) has \(d \cdot k\) components, and is given by
+
+\begin{equation}
+    \mathbf{O}_{linear,i} = \mathbf{X}_i \oplus \mathbf{X}_{i-s} \oplus \mathbf{X}_{i-2s} \oplus \ldots \oplus \mathbf{X}_{i-(k-1)s}
+\end{equation}
+
+Based on the general theory of universal approximators, \(k\) should be taken to be infinitely large. However, it is found in practice that the Volterra series converges rapidly, and hence truncating \(k\) to small values does not incur large error. This can also be motivated by considering numerical integration methods of ordinary differential equations where only a few subintervals (steps) in a multistep integrator are needed to obtain high accuracy. We do not subdivide the step size here, but this analogy motivates why small values of \(k\) might give good performance in the forecasting tasks considered below.
+
+An important aspect of the NG-RC is that its warm-up period only contains \(sk\) time steps, which are needed to create the feature vector for the first point to be processed.
+
+The nonlinear part \(\mathbf{O}_{nonlinear}\) of the feature vector is a nonlinear function of \(\mathbf{O}_{linear}\). While there is great flexibility in choosing the nonlinear functionals, we find that polynomials provide good prediction ability. Polynomial functionals are the basis of a Volterra representation for dynamical systems and hence they are a natural starting point. We find that low-order polynomials are enough to obtain high performance.
+All monomials of the quadratic polynomial, for example, are captured by the outer product \(\mathbf{O}_{linear} \otimes \mathbf{O}_{linear}\), which is a symmetric
+matrix with \((dk)^2\) elements. A quadratic nonlinear feature vector \(\mathbf{O}^{(2)}_{nonlinear}\), for example, is composed of the \((dk)(dk+1)/2\) unique monomials of \(\mathbf{O}_{linear} \otimes \mathbf{O}_{linear}\), which are given by the upper triangular elements of the outer product tensor. We define \(\lceil \otimes \rceil\) as the operator that collects the unique monomials in a vector. Using this notation, a \(p\)-order polynomial feature vector is given by
+
+\begin{equation}
+    \mathbf{O}^{(p)}_{nonlinear} =  \underbrace{\mathbf{O}_{linear} \lceil \otimes \rceil \mathbf{O}_{linear} \lceil \otimes \rceil \ldots \lceil \otimes \rceil \mathbf{O}_{linear} }_{p \text{ times}}
+\end{equation}
+The total feature vector used for the Lorenz63 forecasting task is given by
+\begin{equation}
+    \mathbf{O}_{total} = c \cdot \mathbf{O}_{linear} \oplus \mathbf{O}_{linear}  \oplus  \mathbf{O}^{(2)}_{nonlinear}
+\end{equation}
+
+To allow the NG-RC to focus on the subtle details of this process, we use a simple Euler-like integration step as a lowest-order approximation to a forecasting step by modifying Eq. 2 so that the NG-RC learns the difference between the current and future step. To this end, Eq. 2 is replaced by
+\begin{equation}
+    \mathbf{X}_{i+1} = \mathbf{X}_i + \mathbf{W}_{out} \mathbf{O}_{total,i}
+\end{equation}
+
 \clearpage
 \section{Sample implementation in Python}
 \printbibliography
