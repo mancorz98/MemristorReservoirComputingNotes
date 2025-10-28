@@ -25,20 +25,17 @@ jobs:
 
       - name: Upload to orphan branch
         run: |
-          # Store PDF path
           DATE=$(date +"%Y-%m-%d %H:%M:%S")
           PDF_PATH="${PWD}/main_en.pdf"
-          COMMIT_SHA="${{ github.sha }}"
-
+          COMMIT_MSG="${{ github.event.head_commit.message }}"
+          cp main_en.pdf /tmp/manuscript.pdf
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-          # Create/switch to orphan branch for PDFs
           git checkout --orphan pdf-output
           git rm -rf . 
 
-          # Add only the PDF
           cp "${PDF_PATH}" ./manuscript.pdf
           git add manuscript.pdf
-          git commit -m "Update PDF from ${DATE} (commit: ${COMMIT_SHA})"
+          git commit -m "Update PDF from ${DATE} - ${COMMIT_MSG}"
           git push -f origin pdf-output
