@@ -1,5 +1,9 @@
 name: Build LaTeX document
 on: [push]
+
+permissions:
+  contents: write # This allows pushing to the repo
+
 jobs:
   build_latex:
     runs-on: ubuntu-latest
@@ -23,6 +27,7 @@ jobs:
         run: |
           # Store PDF path
           PDF_PATH="${PWD}/main_en.pdf"
+
 
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
