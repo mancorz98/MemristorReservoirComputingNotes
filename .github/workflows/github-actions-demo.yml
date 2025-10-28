@@ -35,7 +35,7 @@ jobs:
           git checkout --orphan pdf-output
           git rm -rf . 
 
-          cp "${PDF_PATH}" ./manuscript.pdf
+          cp /tmp/manuscript.pdf ./manuscript.pdf
           git add manuscript.pdf
           git commit -m "Update PDF from ${DATE} - ${COMMIT_MSG}"
           git push -f origin pdf-output
