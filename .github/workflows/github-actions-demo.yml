@@ -29,7 +29,6 @@ jobs:
 
           # Create orphan branch for PDFs (no history)
           git checkout --orphan pdf-output
-          git rm -rf .
 
           # Add only the PDF
           cp "${PDF_PATH}" ./manuscript.pdf
