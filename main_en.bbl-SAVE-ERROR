@@ -81,6 +81,178 @@
       \verb http://dx.doi.org/10.1109/MCAS.2023.3325496
       \endverb
     \endentry
+    \entry{Deckers2022}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=943b4b7ebd64fc831ce27f8a153f291d}{%
+           family={Deckers},
+           familyi={D\bibinitperiod},
+           given={Lucas},
+           giveni={L\bibinitperiod}}}%
+        {{hash=51142d3d345f5a4b3ba62f3820fecbfa}{%
+           family={Tsang},
+           familyi={T\bibinitperiod},
+           given={Ing\bibnamedelima Jyh},
+           giveni={I\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=9ef0d672baf21caa3a45c9f48b64f1fa}{%
+           family={Van\bibnamedelima Leekwijck},
+           familyi={V\bibinitperiod\bibinitdelim L\bibinitperiod},
+           given={Werner},
+           giveni={W\bibinitperiod}}}%
+        {{hash=a90fcfbdb93c8d5f74e60a16b052576e}{%
+           family={Latré},
+           familyi={L\bibinitperiod},
+           given={Steven},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{e279e59f4c2ad5beb65e6967f87c0940}
+      \strng{fullhash}{5ce7ceedfd39775b6165f9f496313959}
+      \strng{fullhashraw}{5ce7ceedfd39775b6165f9f496313959}
+      \strng{bibnamehash}{e279e59f4c2ad5beb65e6967f87c0940}
+      \strng{authorbibnamehash}{e279e59f4c2ad5beb65e6967f87c0940}
+      \strng{authornamehash}{e279e59f4c2ad5beb65e6967f87c0940}
+      \strng{authorfullhash}{5ce7ceedfd39775b6165f9f496313959}
+      \strng{authorfullhashraw}{5ce7ceedfd39775b6165f9f496313959}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{1662-453X}
+      \field{journaltitle}{Frontiers in Neuroscience}
+      \field{title}{Extended liquid state machines for speech recognition}
+      \field{volume}{Volume 16 - 2022}
+      \field{year}{2022}
+      \verb{doi}
+      \verb 10.3389/fnins.2022.1023470
+      \endverb
+      \verb{urlraw}
+      \verb https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2022.1023470
+      \endverb
+      \verb{url}
+      \verb https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2022.1023470
+      \endverb
+    \endentry
+    \entry{Du2017}{article}{}{}
+      \name{author}{6}{}{%
+        {{hash=bc20802f575175c5666ccc401f133f6f}{%
+           family={Du},
+           familyi={D\bibinitperiod},
+           given={Chao},
+           giveni={C\bibinitperiod}}}%
+        {{hash=cb901327bef9dd5a7677bff79488868d}{%
+           family={Cai},
+           familyi={C\bibinitperiod},
+           given={Fuxi},
+           giveni={F\bibinitperiod}}}%
+        {{hash=3be039dbfafb8fc4e71ba4f4e0ef776d}{%
+           family={Zidan},
+           familyi={Z\bibinitperiod},
+           given={Mohammed\bibnamedelima A.},
+           giveni={M\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=757bafe7b628e9292b430eaf8e3c7af0}{%
+           family={Ma},
+           familyi={M\bibinitperiod},
+           given={Wen},
+           giveni={W\bibinitperiod}}}%
+        {{hash=db2d294fc3294d9211b694b4f21d969f}{%
+           family={Lee},
+           familyi={L\bibinitperiod},
+           given={Seung\bibnamedelima Hwan},
+           giveni={S\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=6811e986c30783c64efd7bc58eef1ca2}{%
+           family={Lu},
+           familyi={L\bibinitperiod},
+           given={Wei\bibnamedelima D.},
+           giveni={W\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \list{publisher}{2}{%
+        {Springer Science}%
+        {Business Media LLC}%
+      }
+      \strng{namehash}{517d7d449d14f6b52dd70d563c9cd3d4}
+      \strng{fullhash}{9ec94ccdd6af044afcf2fb026318f312}
+      \strng{fullhashraw}{9ec94ccdd6af044afcf2fb026318f312}
+      \strng{bibnamehash}{517d7d449d14f6b52dd70d563c9cd3d4}
+      \strng{authorbibnamehash}{517d7d449d14f6b52dd70d563c9cd3d4}
+      \strng{authornamehash}{517d7d449d14f6b52dd70d563c9cd3d4}
+      \strng{authorfullhash}{9ec94ccdd6af044afcf2fb026318f312}
+      \strng{authorfullhashraw}{9ec94ccdd6af044afcf2fb026318f312}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2041-1723}
+      \field{journaltitle}{Nature Communications}
+      \field{month}{12}
+      \field{number}{1}
+      \field{title}{Reservoir computing using dynamic memristors for temporal information processing}
+      \field{volume}{8}
+      \field{year}{2017}
+      \verb{doi}
+      \verb 10.1038/s41467-017-02337-y
+      \endverb
+      \verb{urlraw}
+      \verb http://dx.doi.org/10.1038/s41467-017-02337-y
+      \endverb
+      \verb{url}
+      \verb http://dx.doi.org/10.1038/s41467-017-02337-y
+      \endverb
+    \endentry
+    \entry{Gauthier2021}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=de56bf9ce37940ee2f937ce34bb18896}{%
+           family={Gauthier},
+           familyi={G\bibinitperiod},
+           given={Daniel\bibnamedelima J.},
+           giveni={D\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=e926c1cd70d25a3b1c3436e36cf5ae7b}{%
+           family={Bollt},
+           familyi={B\bibinitperiod},
+           given={Erik},
+           giveni={E\bibinitperiod}}}%
+        {{hash=bd767fc211ffb71e2f1fed0792a0ae2c}{%
+           family={Griffith},
+           familyi={G\bibinitperiod},
+           given={Aaron},
+           giveni={A\bibinitperiod}}}%
+        {{hash=636928f8f6ed555cbc4e459cb2059c01}{%
+           family={Barbosa},
+           familyi={B\bibinitperiod},
+           given={Wendson\bibnamedelimb A.\bibnamedelimi S.},
+           giveni={W\bibinitperiod\bibinitdelim A\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \list{publisher}{2}{%
+        {Springer Science}%
+        {Business Media LLC}%
+      }
+      \strng{namehash}{7980324cc859361ac24b2fd2303d0b4e}
+      \strng{fullhash}{590766916e5cc90dca53a54f3b1d5f72}
+      \strng{fullhashraw}{590766916e5cc90dca53a54f3b1d5f72}
+      \strng{bibnamehash}{7980324cc859361ac24b2fd2303d0b4e}
+      \strng{authorbibnamehash}{7980324cc859361ac24b2fd2303d0b4e}
+      \strng{authornamehash}{7980324cc859361ac24b2fd2303d0b4e}
+      \strng{authorfullhash}{590766916e5cc90dca53a54f3b1d5f72}
+      \strng{authorfullhashraw}{590766916e5cc90dca53a54f3b1d5f72}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2041-1723}
+      \field{journaltitle}{Nature Communications}
+      \field{month}{9}
+      \field{number}{1}
+      \field{title}{Next generation reservoir computing}
+      \field{volume}{12}
+      \field{year}{2021}
+      \verb{doi}
+      \verb 10.1038/s41467-021-25801-2
+      \endverb
+      \verb{urlraw}
+      \verb http://dx.doi.org/10.1038/s41467-021-25801-2
+      \endverb
+      \verb{url}
+      \verb http://dx.doi.org/10.1038/s41467-021-25801-2
+      \endverb
+    \endentry
     \entry{Grigoryeva2016}{inproceedings}{}{}
       \name{author}{4}{}{%
         {{hash=ce4d732e6f75f77bd4e613b2a01a7ae5}{%
@@ -133,6 +305,103 @@
       \endverb
       \verb{url}
       \verb http://dx.doi.org/10.1109/CSE-EUC-DCABES.2016.230
+      \endverb
+    \endentry
+    \entry{Hwang2025}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=41bb6f9bc328266cd0fe3b7318992025}{%
+           family={Hwang},
+           familyi={H\bibinitperiod},
+           given={Su\bibnamedelima In},
+           giveni={S\bibinitperiod\bibinitdelim I\bibinitperiod}}}%
+        {{hash=298733a66c25914d7d1877a3c65dc7de}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Do\bibnamedelima Young},
+           giveni={D\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+        {{hash=82f76e40ab690eea3225a270244e50ae}{%
+           family={Cho},
+           familyi={C\bibinitperiod},
+           given={Hyun\bibnamedelima Yeop},
+           giveni={H\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+        {{hash=88bbba0c356eabfedc0ac2d3c2b1089b}{%
+           family={Yoon},
+           familyi={Y\bibinitperiod},
+           given={Jung\bibnamedelima Ho},
+           giveni={J\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier BV}%
+      }
+      \strng{namehash}{5feaa2738cdc54d7fcdfc525813598e9}
+      \strng{fullhash}{7befa4d76ae3e7c3c5c72820f11ee3d3}
+      \strng{fullhashraw}{7befa4d76ae3e7c3c5c72820f11ee3d3}
+      \strng{bibnamehash}{5feaa2738cdc54d7fcdfc525813598e9}
+      \strng{authorbibnamehash}{5feaa2738cdc54d7fcdfc525813598e9}
+      \strng{authornamehash}{5feaa2738cdc54d7fcdfc525813598e9}
+      \strng{authorfullhash}{7befa4d76ae3e7c3c5c72820f11ee3d3}
+      \strng{authorfullhashraw}{7befa4d76ae3e7c3c5c72820f11ee3d3}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{2666-9986}
+      \field{journaltitle}{Device}
+      \field{month}{9}
+      \field{number}{9}
+      \field{title}{Multi-timescale temporal processing for ion-motion memristor-based physical reservoir computing}
+      \field{volume}{3}
+      \field{year}{2025}
+      \field{pages}{100907}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1016/j.device.2025.100907
+      \endverb
+      \verb{urlraw}
+      \verb http://dx.doi.org/10.1016/j.device.2025.100907
+      \endverb
+      \verb{url}
+      \verb http://dx.doi.org/10.1016/j.device.2025.100907
+      \endverb
+    \endentry
+    \entry{Maass2011}{inbook}{}{}
+      \name{author}{1}{}{%
+        {{hash=1b7071d23a59fcc869863e969ca2e992}{%
+           family={Maass},
+           familyi={M\bibinitperiod},
+           given={Wolfgang},
+           giveni={W\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {IMPERIAL COLLEGE PRESS}%
+      }
+      \strng{namehash}{1b7071d23a59fcc869863e969ca2e992}
+      \strng{fullhash}{1b7071d23a59fcc869863e969ca2e992}
+      \strng{fullhashraw}{1b7071d23a59fcc869863e969ca2e992}
+      \strng{bibnamehash}{1b7071d23a59fcc869863e969ca2e992}
+      \strng{authorbibnamehash}{1b7071d23a59fcc869863e969ca2e992}
+      \strng{authornamehash}{1b7071d23a59fcc869863e969ca2e992}
+      \strng{authorfullhash}{1b7071d23a59fcc869863e969ca2e992}
+      \strng{authorfullhashraw}{1b7071d23a59fcc869863e969ca2e992}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Computability in Context}
+      \field{isbn}{9781848162778}
+      \field{month}{2}
+      \field{title}{Liquid State Machines: Motivation, Theory, and Applications}
+      \field{year}{2011}
+      \field{pages}{275\bibrangedash 296}
+      \range{pages}{22}
+      \verb{doi}
+      \verb 10.1142/9781848162778_0008
+      \endverb
+      \verb{urlraw}
+      \verb http://dx.doi.org/10.1142/9781848162778_0008
+      \endverb
+      \verb{url}
+      \verb http://dx.doi.org/10.1142/9781848162778_0008
       \endverb
     \endentry
     \entry{Ortn2015}{article}{}{}
