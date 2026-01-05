@@ -14,6 +14,7 @@
 \usepackage{float}
 
 
+
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
@@ -50,8 +51,8 @@
 \usepackage{amsfonts}
 \usepackage{mathbbol}
 
-\catcode`_=\active
-\def_#1{\sb{\mathrm{#1}}}
+% \catcode`_=\active
+% \def_#1{\sb{\mathrm{#1}}}
 
 
 \pgfplotsset{compat=1.18} % Set the compatibility level for pg
@@ -498,6 +499,8 @@ where:
 The amplitude modulation encodes each pixel value within the patch as a discrete voltage level, creating a multi-level pulse train that preserves the spatial information in the temporal domain. This encoding is particularly well-suited for memristor dynamics, as it exploits the devices' inherent integration capabilities.
 
 
+
+
 \subsubsection{Feature Vector Construction and Augmentation}
 
 The final feature representation for each image is constructed by aggregating the terminal states of all memristors after processing their respective patches:
@@ -535,9 +538,20 @@ The total computational time for processing a single image can be estimated as:
 where \(T_{\text{patch}}\) represents the time required for a single patch-memristor interaction, and \(T_{\text{overhead}}\) accounts for data preparation and feature aggregation operations.
 
 
+\subsection{Patch Encoding for Memristor Crosbar Array Reservoir}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{vector_figs/Patch-algorithm.pdf}
+    \caption{Patch-based feature extraction and memristor reservoir processing methodology for the memristor crossbar array reservoir computing system.}
+    % \label{fig:memristor-rc}
+\end{figure}
+
 \subsection{Results}
 
-For the provided patch-based feature extraction and memristor reservoir processing methodology, the memristor-based reservoir computing system achieved a classification accuracy of 80.25\% on the MNIST dataset. This performance metric underscores higher  efficacy of the proposed architecture in leveraging localized spatial features and the intrinsic dynamics of memristive devices for temporal information processing tasks.
+For the provided patch-based feature extraction and memristor reservoir processing methodology, the memristor-based reservoir computing system achieved a classification accuracy of 80.25\% on the MNIST dataset (91.33\% for tetst datasets for the crossbar array) . This performance metric underscores higher  efficacy of the proposed architecture in leveraging localized spatial features and the intrinsic dynamics of memristive devices for temporal information processing tasks.
+
+
 
 
 
