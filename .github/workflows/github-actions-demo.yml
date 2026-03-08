@@ -39,3 +39,19 @@ jobs:
           git add manuscript.pdf
           git commit -m "Update PDF from ${DATE} - ${COMMIT_MSG}"
           git push -f origin pdf-output
+
+      - name: Checkout main again
+        uses: actions/checkout@v6
+
+      - name: Create Release
+        run: |
+          TAG="build-$(date +%Y%m%d-%H%M)"
+          echo "TAG=$TAG" >> $GITHUB_ENV
+
+      - name: Publish Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          name: Build ${{ env.TAG }}
+          files: main_en.pdf
+          make_latest: true
