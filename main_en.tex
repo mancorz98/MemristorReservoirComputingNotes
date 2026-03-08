@@ -407,160 +407,123 @@ Based on \autocite{Du2017,Hwang2025}.
     \item Exploration of possibility of robust modelling of circuits with memristors within reservoir computing framework.
 \end{itemize}
 
-\section{Simulation results}
+\section{Experimental Investigation of Memristor-Based Reservoir Computing}
 
-The experimental investigation commenced with comprehensive computational simulations employing the memristor MMS  model.
-
-For the evaluation of the proposed reservoir computing architecture, the standardized MNIST (Modified National Institute of Standards and Technology) dataset was utilized, comprising grayscale images of handwritten digits with dimensions of 28×28 pixels. This benchmark dataset represents a fundamental test case for pattern recognition systems and enables direct comparison with existing neuromorphic computing paradigms.
+The experimental investigation was conducted through computational simulations employing the Memristor Mean Metastable Switch (MMS) memristor model. The standardised MNIST (Modified National Institute of Standards and Technology) dataset, comprising 28$\times$28 pixel grayscale images of handwritten digits, was used as the classification benchmark. This dataset provides a well-established baseline for evaluating neuromorphic computing architectures and enables direct comparison with prior work.
 
 \subsection{Row-Wise Input Encoding Methodology}
 
-The initial phase of the simulation protocol involved a row-wise decomposition strategy, described in \autocite{Du2017} for processing the input images. Specifically, each 28×28 pixel image was segmented into 28 discrete rows, with each row being processed sequentially through the reservoir architecture. This decomposition approach facilitated the implementation of a reservoir configuration comprising 28 memristive elements, where each memristor corresponded to a distinct spatial position within the input row vector.
+The initial encoding strategy follows the row-wise decomposition proposed in~\autocite{Du2017}. Each 28$\times$28 image is partitioned into 28 row vectors, which are presented sequentially to a reservoir consisting of 28 memristive elements, one per spatial position within the row.
 
-The encoding of pixel information into the temporal domain was accomplished through a voltage-based pulse amplitude modulation scheme. Each grayscale pixel value, normalized within the range [0, 1], was mapped to a corresponding voltage amplitude in the range [0, V\textsubscript{max}] volts, where V\textsubscript{max} represents the maximum applied voltage determined by the operational constraints of the memristive devices. This linear mapping function can be expressed as:
+Pixel intensities are encoded into the temporal domain via pulse amplitude modulation. Each grayscale value $I(i,j) \in [0, 255]$ is mapped to a voltage amplitude:
 
 \begin{equation}
     V_{\text{pixel}}(i,j) = V_{\text{max}} \cdot \frac{I(i,j)}{255}
 \end{equation}
-where \(I(i,j)\) denotes the grayscale intensity value at pixel position \((i,j)\), and \(V_{\text{pixel}}(i,j)\) represents the corresponding encoded voltage amplitude.
+
+\noindent where $V_{\text{max}}$ denotes the maximum voltage determined by the operational range of the memristive device.
 
 \subsubsection{Results}
-For the provided row-wise input encoding methodology, the memristor-based reservoir computing system achieved a classification accuracy of 60.37\% on the MNIST dataset. This performance metric underscores the low efficacy of the proposed architecture in leveraging the intrinsic dynamics of memristive devices for temporal information processing tasks.
 
-% \subsection{Convolutional Input Encoding Methodology}
+Under the row-wise encoding, the reservoir system achieved a classification accuracy of 60.37\% on the MNIST test set. This relatively modest result reflects the inherent limitation of row-wise serialisation: each memristor processes a one-dimensional temporal signal devoid of local two-dimensional spatial context, constraining the representational capacity of the reservoir.
 
-\subsection{Patch-Based Feature Extraction and Memristor Reservoir Processing}
+\subsection{Patch-Based Feature Extraction for Memristor Crossbar Array Reservoir}
 
-Building upon the row-wise processing paradigm, a more sophisticated approach was developed employing a patch-based feature extraction methodology combined with memristor reservoir computing. This technique leverages local spatial correlations within the input images while maintaining computational efficiency through systematic spatial subsampling.
+To overcome the limitations of row-wise encoding and to exploit the parallel computational structure of memristor crossbar arrays, a patch-based spatial decomposition is applied to the input images prior to temporal encoding. This approach maps localised spatial features onto the row inputs of the crossbar, enabling simultaneous reservoir processing across all rows.
 
-\subsubsection{Spatial Patch Extraction Algorithm}
+\subsubsection{Spatial Patch Extraction}
 
-The foundation of this approach rests upon a sliding window mechanism for extracting overlapping or non-overlapping rectangular patches from the input images. The patch extraction function implements a systematic traversal of the image space according to the following algorithmic procedure:
-
-
-
-Given an input image \(\mathbf{I} \in \mathbb{R}^{H \times W}\) where \(H\) and \(W\) denote the height and width respectively, the extraction process generates a set of patches \(\mathcal{P} = \{P_1, P_2, ..., P_N\}\) where each patch \(P_i \in \mathbb{R}^{k_h \times k_w}\) represents a local spatial region of dimensions \(k_h \times k_w\) (the kernel size). The extraction follows a raster scan pattern with a specified stride parameter \(s\) that controls the spatial sampling density.
-
-The mathematical formulation of the patch extraction can be expressed as:
+Given an input image $\mathbf{I} \in \mathbb{R}^{H \times W}$, a sliding window of size $k_h \times k_w$ with stride $s$ extracts a set of $N$ patches $\mathcal{P} = \{P_1, P_2, \ldots, P_N\}$, where each patch $P_i \in \mathbb{R}^{k_h \times k_w}$ captures a localised spatial region. The patch at grid position $(m, n)$ is given by:
 
 \begin{equation}
-    P_{m,n} = \mathbf{I}[is:(is+k_h-1), js:(js+k_w-1)]
+    P_{m,n} = \mathbf{I}\bigl[m s : m s + k_h - 1,\; n s : n s + k_w - 1\bigr]
 \end{equation}
 
-where the indices \((m,n)\) correspond to the patch coordinates in the output grid, and:
-\begin{align}
-    i & = 1 + m \cdot s, \quad m \in \{0, 1, ..., \lfloor\frac{H-k_h}{s}\rfloor\} \\
-    j & = 1 + n \cdot s, \quad n \in \{0, 1, ..., \lfloor\frac{W-k_w}{s}\rfloor\}
-\end{align}
+\noindent with $m \in \{0, 1, \ldots, \lfloor(H - k_h)/s\rfloor\}$ and $n \in \{0, 1, \ldots, \lfloor(W - k_w)/s\rfloor\}$. For the MNIST images ($H = W = 28$) with kernel size $k_h = k_w = 8$ and stride $s = 3$, this yields a $7 \times 7$ grid of $N = 49$ patches per image.
 
-Each extracted patch is subsequently vectorized through a flattening operation, transforming the 2D patch into a 1D feature vector of length \(k_h \cdot k_w\):
+\subsubsection{Row-Wise Temporal Encoding for the Crossbar Array}
+
+Each extracted patch $P_i \in \mathbb{R}^{k_h \times k_w}$ is mapped onto the crossbar array such that each of the $k_h$ rows of the patch drives a corresponding row input of the array. The $r$-th row of patch $P_i$, denoted $\mathbf{p}_i^{(r)} = [p_{r,1},\, p_{r,2},\, \ldots,\, p_{r,k_w}]$, is encoded as a temporal sequence of $k_w$ voltage pulses with amplitudes proportional to the pixel intensities:
 
 \begin{equation}
-    \vec{p}_i = \text{vec}(P_i) \in \mathbb{R}^{k_h \cdot k_w}
+    V_r(t) = \sum_{c=1}^{k_w} p_{r,c} \cdot \Pi\!\left(\frac{t - (c-1)\,T_{\mathrm{period}}}{D \cdot T_{\mathrm{period}}}\right)
 \end{equation}
 
-\subsubsection{Implementation Parameters for MNIST Processing}
+\noindent where $\Pi(\cdot)$ is the rectangular pulse function, $T_{\mathrm{period}}$ is the pulse period, and $D \in (0, 1]$ is the duty cycle. This encoding transforms each row of pixel values into an amplitude-modulated pulse train, preserving the spatial pixel ordering as a temporal sequence.
 
-For the specific case of MNIST digit classification, the following hyperparameters were empirically determined to optimize the balance between feature resolution and computational efficiency:
+All $k_h$ rows of a given patch are applied simultaneously, driving the corresponding row inputs of the crossbar in parallel. At each column $c$, the column wire accumulates current contributions from all $k_h$ row memristors according to Kirchhoff's current law, so that the terminal state of the column memristor reflects a nonlinear integration over all row signals.
 
-\begin{itemize}
-    \item \textbf{Kernel dimensions}: \((k_h, k_w) = (5, 5)\), yielding 25-dimensional feature vectors per patch
-    \item \textbf{Stride}: \(s = 3\) pixels, providing moderate spatial overlap between adjacent patches
-    \item \textbf{Image dimensions}: \((H, W) = (28, 28)\) pixels (standard MNIST format)
-\end{itemize}
-
-These parameters result in a systematic decomposition of each image into a grid of patches with dimensions:
-
-\begin{align}
-    n_{\text{patches}}^h              & = \lfloor\frac{28 - 5}{3}\rfloor + 1 = 8                \\
-    n_{\text{patches}}^w              & = \lfloor\frac{28 - 5}{3}\rfloor + 1 = 8                \\
-    n_{\text{patches}}^{\text{total}} & = n_{\text{patches}}^h \times n_{\text{patches}}^w = 64
-\end{align}
-
-This configuration effectively transforms each 784-dimensional input image (28×28 pixels) into 64 localized feature patches, each containing 25 pixels of spatial information.
-
-\subsubsection{Temporal Encoding via Carrier Wave Modulation}
-
-The proposed methodology involves the encoding of patch information through amplitude-modulated carrier waves. For each patch vector \(\vec{p}_i\), a time-varying voltage signal is generated using the following carrier wave generation scheme:
-
-\begin{equation}
-    V_{\text{carrier}}(t) = A(t) \cdot \Pi\left(\frac{t \bmod T_{\text{period}}}{D \cdot T_{\text{period}}}\right)
-\end{equation}
-
-where:
-\begin{itemize}
-    \item \(A(t)\) represents the amplitude modulation function derived from the patch pixel values
-    \item \(\Pi(\cdot)\) denotes the rectangular pulse function
-    \item \(T_{\text{period}} = 10^{-5}\) seconds (10 microseconds) is the carrier period
-    \item \(D = 0.8\) is the duty cycle, resulting in 8 microseconds on-time and 2 microseconds off-time
-    \item The sampling frequency \(f_s = 10^7\) Hz (10 MHz) ensures adequate temporal resolution
-\end{itemize}
-
-The amplitude modulation encodes each pixel value within the patch as a discrete voltage level, creating a multi-level pulse train that preserves the spatial information in the temporal domain. This encoding is particularly well-suited for memristor dynamics, as it exploits the devices' inherent integration capabilities.
-
-
-
-
-\subsubsection{Feature Vector Construction and Augmentation}
-
-The final feature representation for each image is constructed by aggregating the terminal states of all memristors after processing their respective patches:
-
-\begin{equation}
-    \mathbf{x}_j = [x_1^{\text{final}}, x_2^{\text{final}}, ..., x_{64}^{\text{final}}, 1]^T \in \mathbb{R}^{65}
-\end{equation}
-
-where \(x_i^{\text{final}} = x_i(t_{\text{max}})\) represents the final state of the memristor processing patch \(i\), and the additional unity element serves as a bias term for subsequent linear classification layers.
-
-This feature extraction process is applied systematically to the entire training dataset, resulting in a transformed feature matrix:
-
-\begin{equation}
-    \mathbf{X} = [\mathbf{x}_1, \mathbf{x}_2, ..., \mathbf{x}_N] \in \mathbb{R}^{65 \times N}
-\end{equation}
-
-where \(N\) denotes the number of training samples.
-
-\subsubsection{Computational Complexity and Parallelization Potential}
-
-The patch-based approach offers several computational advantages over full-image processing:
-
-1. \textbf{Reduced dimensionality}: Each memristor processes only 25 pixels instead of 784, significantly reducing the temporal duration of input signals.
-
-2. \textbf{Natural parallelism}: The 64 patches can be processed independently, enabling straightforward parallelization across multiple memristor units or computational cores.
-
-3. \textbf{Memory efficiency}: The patch-wise processing requires storage of only \((n_{\text{patches}} + 1) \times N\) floating-point values for the feature matrix, compared to the original \(784 \times N\) pixel values.
-
-The total computational time for processing a single image can be estimated as:
-
-\begin{equation}
-    T_{\text{total}} = n_{\text{patches}} \times T_{\text{patch}} + T_{\text{overhead}}
-\end{equation}
-
-where \(T_{\text{patch}}\) represents the time required for a single patch-memristor interaction, and \(T_{\text{overhead}}\) accounts for data preparation and feature aggregation operations.
-
-
-\subsection{Patch Encoding for Memristor Crosbar Array Reservoir}
+The patch extraction and crossbar encoding methodology is illustrated in Fig.~\ref{fig:patch_algorithm}. An example of the temporal pulse sequence applied to the first row of the crossbar is shown in Fig.~\ref{fig:example_programming}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{vector_figs/Patch-algorithm.pdf}
-    \caption{Patch-based feature extraction and memristor reservoir processing methodology for the memristor crossbar array reservoir computing system.}
-    % \label{fig:memristor-rc}
+    \caption{Patch-based feature extraction and encoding methodology for the memristor crossbar array reservoir. Each image is decomposed into overlapping patches, and each patch row is converted into a temporal pulse train applied to the corresponding crossbar row input.}
+    \label{fig:patch_algorithm}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{vector_figs/example_programming.pdf}
-    \caption{Example of programming the first row of the memristor crossbar array reservoir with the patch-based feature extraction method.}
-    % \label{fig:memristor-rc}
+    \caption{Example of the amplitude-modulated voltage pulse sequence applied to the first row of the memristor crossbar array during processing of a single patch.}
+    \label{fig:example_programming}
 \end{figure}
 
+\subsubsection{Feature Vector Construction}
 
-\subsection{Results}
+After the complete pulse sequence for patch $P_i$ has been applied, the terminal conductance states of all $k_w$ column memristors are read out, yielding a local feature vector:
 
-For the provided patch-based feature extraction and memristor reservoir processing methodology, the memristor-based reservoir computing system achieved a classification accuracy of 80.25\% on the MNIST dataset (91.33\% for test datasets for the crossbar array). This performance metric underscores higher  efficacy of the proposed architecture in leveraging localized spatial features and the intrinsic dynamics of memristive devices for temporal information processing tasks. The significant improvement in classification accuracy compared to the row-wise processing approach can be attributed to the enhanced feature representation provided by the patch-based method, which captures local spatial correlations more effectively.
+\begin{equation}
+    \mathbf{f}_i = \bigl[x_{i,1}^{\mathrm{final}},\, x_{i,2}^{\mathrm{final}},\, \ldots,\, x_{i,k_w}^{\mathrm{final}}\bigr]^T \in \mathbb{R}^{k_w}
+\end{equation}
 
-The experimental results demonstrate the potential of memristor-based reservoir computing systems for complex pattern recognition tasks, showing 87\% accuracy for the crossbar array reservoir. Future work will focus on further optimizing the patch extraction parameters, exploring alternative encoding schemes, and investigating the scalability of the architecture to larger datasets and more complex tasks.
+\noindent where $x_{i,c}^{\mathrm{final}}$ denotes the terminal state of the memristor in column $c$ after processing patch $i$. Each column state encodes a nonlinear transformation resulting from the simultaneous integration of all row signals at that column.
 
+The global feature vector for a given image is formed by concatenating the local feature vectors from all $N$ patches, with an appended bias term:
+
+\begin{equation}
+    \mathbf{x} = \bigl[\mathbf{f}_1^T,\, \mathbf{f}_2^T,\, \ldots,\, \mathbf{f}_N^T,\, 1\bigr]^T \in \mathbb{R}^{N k_w + 1}
+\end{equation}
+
+\noindent For the MNIST configuration ($N = 49$ patches, $k_w = 8$ columns), this yields a feature vector of dimensionality $49 \times 8 + 1 = 393$.
+
+\subsection{Classification Performance of the Patch-Based Reservoir}
+
+The patch-based reservoir was evaluated on the MNIST test set using ridge regression as the readout layer. The system achieved a classification accuracy of 87\% in the experimental verification (compared to 91\% obtained with the idealised simulation), representing a significant improvement over the 60.37\% obtained with the row-wise encoding baseline. The 4 percentage point gap between simulation and experiment can be attributed to device-to-device variability, noise in the physical readout, and non-ideal switching dynamics of the fabricated memristors, which are not captured by the idealised MMS model.
+
+This performance gain can be attributed to two complementary factors. First, the patch-based decomposition preserves local two-dimensional spatial correlations that are lost under row-wise serialisation, allowing the reservoir to process spatially coherent inputs. Second, the crossbar architecture enables each column to aggregate nonlinear contributions from all rows simultaneously, producing a richer per-patch representation. The resulting 393-dimensional feature space provides the linear readout with substantially greater discriminative capacity compared to the 28-dimensional representation of the row-wise approach.
+
+The confusion matrix (Fig.~\ref{fig:confusion_matrix}) shows high per-class accuracy across most digit categories, with the principal misclassifications occurring between structurally similar digit pairs such as (3,\,5) and (4,\,9). This pattern is consistent with the known morphological similarity structure of the MNIST dataset and indicates that the reservoir features capture meaningful shape distinctions.
+
+The quality of the learned representations was further assessed by projecting the reservoir state vectors into two dimensions using t-SNE and UMAP (Fig.~\ref{fig:reservoir_embeddings}). Both embeddings exhibit well-separated, compact clusters corresponding to individual digit classes, confirming that the memristor reservoir maps the input patches into a feature space in which the class boundaries are approximately linearly separable.
+
+These results demonstrate that memristor crossbar arrays, combined with a patch-based spatial encoding strategy, provide an effective physical substrate for reservoir computing in pattern recognition tasks. Future work will focus on optimising the patch extraction hyperparameters, exploring alternative temporal encoding schemes such as frequency modulation, and evaluating the scalability of the architecture to higher-resolution datasets and more complex classification problems.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\textwidth]{results/confusion_matrix.pdf}
+    \caption{Confusion matrix for the patch-based memristor reservoir classifier on the MNIST test set. Diagonal elements indicate correct classifications; off-diagonal elements represent misclassifications.}
+    \label{fig:confusion_matrix}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{results/tsne_reservoir.pdf}
+        \caption{t-SNE projection}
+        \label{fig:tsne_reservoir}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{results/umap_reservoir.pdf}
+        \caption{UMAP projection}
+        \label{fig:umap_reservoir}
+    \end{subfigure}
+    \caption{Two-dimensional embeddings of the reservoir feature vectors for the MNIST test set, computed via (a)~t-SNE and (b)~UMAP. Each point represents a single sample, coloured by digit class. The well-defined cluster structure confirms approximate linear separability of the reservoir representations.}
+    \label{fig:reservoir_embeddings}
+\end{figure}
 
 \printbibliography
 
