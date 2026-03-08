@@ -12,6 +12,50 @@
 \usepackage{circuitikz}
 \usepackage{listings}
 \usepackage{float}
+\usepackage{tikz}
+\usepackage{pgfplots}
+
+\pgfplotsset{compat=1.18}
+
+\tikzstyle{startstop} = [rectangle, rounded corners, 
+minimum width=3cm, 
+minimum height=1cm,
+text centered, 
+draw=black, 
+fill=red!30]
+
+\tikzstyle{io} = [trapezium, 
+trapezium stretches=true, % A later addition
+trapezium left angle=70, 
+trapezium right angle=110, 
+minimum width=3cm, 
+minimum height=1cm, text centered, 
+rounded corners,
+draw=black, fill=blue!30]
+
+\tikzstyle{process} = [rectangle, 
+minimum width=3cm, 
+minimum height=1cm, 
+text centered, 
+text width=5cm, 
+draw=black, 
+rounded corners,
+fill=orange!30]
+
+\tikzstyle{decision} = [diamond, 
+minimum width=3cm, 
+minimum height=1cm, 
+text centered, 
+draw=black, 
+aspect=2,
+rounded corners,
+fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+
+\usetikzlibrary{shapes.geometric, arrows, arrows.meta}
+
+
 
 
 
@@ -524,6 +568,16 @@ These results demonstrate that memristor crossbar arrays, combined with a patch-
     \caption{Two-dimensional embeddings of the reservoir feature vectors for the MNIST test set, computed via (a)~t-SNE and (b)~UMAP. Each point represents a single sample, coloured by digit class. The well-defined cluster structure confirms approximate linear separability of the reservoir representations.}
     \label{fig:reservoir_embeddings}
 \end{figure}
+
+
+
+\begin{figure}[H]
+    \centering
+    \resizebox{0.5\textwidth}{!}{\input{tex_figs/workflow_diagram.tex}}
+    \caption{Flowchart of the memristor programming and readout procedure executed on the STM32 microcontroller for a single patch. Upon receiving a patch via the serial interface, the device iterates through $N_{\rm p}$ programming cycles, each consisting of a reset pulse followed by an amplitude-modulated programming pulse corresponding to the encoded pixel intensity. After all programming pulses have been applied, a read pulse is performed to measure the resulting memristor conductance state ($i_{\rm read}$), which is transmitted back to the host via the serial interface.}
+
+\end{figure}
+
 
 \printbibliography
 

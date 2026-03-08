@@ -1,0 +1,67 @@
+
+
+% \begin{document}
+
+
+
+
+
+
+
+
+\begin{tikzpicture}[node distance=2cm, font=\LARGE]
+
+\node (start) [startstop] {Start};
+
+% \node (init) [process, below of=start]{$a_0$ := initial parameters};
+
+
+
+\node (init) [io, below of=start] {Get patch from serial interface, set $i_{\rm p} := 0$};
+\draw [-{Latex[length=3mm,width=5mm]}] (start) -- (init);
+
+
+
+\node (pro1) [process, below of=init, text width=6cm] {Perform \textbf{reset} pulse};
+
+\draw [-{Latex[length=3mm,width=5mm]}] (init) -- (pro1);
+
+\node (pro2) [process, below of=pro1, ] {Perform \textbf{programming} pulse};
+
+\draw [-{Latex[length=3mm,width=5mm]}] (pro1) -- (pro2);
+
+\node (pro3) [process, below of=pro2, ] {Increment $i_{\rm p}$};
+
+\draw [-{Latex[length=3mm,width=5mm]}] (pro2) -- (pro3);
+
+
+\node (dec1) [decision, below of=pro3, yshift=-0.5cm] {$i_{\rm p} <  N_{\rm p}$};
+
+
+
+
+\node (pro4) [process, below of=dec1, text width=6cm, yshift=-0.5cm] {Perform \textbf{read} pulse};
+
+\draw [-{Latex[length=3mm,width=5mm]}] (pro3) -- (dec1);
+
+
+\draw [-{Latex[length=3mm,width=5mm]}] (dec1) -- node[anchor=west] {no}  (pro4);
+
+\draw [-{Latex[length=3mm,width=5mm]}] (dec1) -- ++(5,0) |- node[anchor=west] {yes} (pro2);
+
+\node (pro5) [process, below of=pro4] {Read programmed current $i_{\rm read}$};
+
+
+\draw [-{Latex[length=3mm,width=5mm]}] (pro4) -- (pro5);
+
+\node (output) [io, below of=pro5] {Output $i_{\rm read}$ to serial interface};
+
+\node (stop) [startstop, below of=output] {Stop};
+\draw [-{Latex[length=3mm,width=5mm]}] (pro5) -- (output);
+\draw [-{Latex[length=3mm,width=5mm]}] (output) -- (stop);
+
+
+
+\end{tikzpicture}
+
+
