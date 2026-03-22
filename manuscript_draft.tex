@@ -1,0 +1,289 @@
+\documentclass[11pt, oneside]{article} 
+\usepackage{amsmath, amsthm, amssymb, wasysym, verbatim, bbm, color, geometry}
+\usepackage{amsfonts}
+\usepackage{csquotes}
+% \usepackage{polski}
+\usepackage[english]{babel}
+\usepackage[nottoc]{tocbibind}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{circuitikz}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{tikz}
+\usepackage{pgfplots}
+
+\pgfplotsset{compat=1.18}
+
+\tikzstyle{startstop} = [rectangle, rounded corners, 
+minimum width=3cm, 
+minimum height=1cm,
+text centered, 
+draw=black, 
+fill=red!30]
+
+\tikzstyle{io} = [trapezium, 
+trapezium stretches=true, % A later addition
+trapezium left angle=70, 
+trapezium right angle=110, 
+minimum width=3cm, 
+minimum height=1cm, text centered, 
+rounded corners,
+draw=black, fill=blue!30]
+
+\tikzstyle{process} = [rectangle, 
+minimum width=3cm, 
+minimum height=1cm, 
+text centered, 
+text width=5cm, 
+draw=black, 
+rounded corners,
+fill=orange!30]
+
+\tikzstyle{decision} = [diamond, 
+minimum width=3cm, 
+minimum height=1cm, 
+text centered, 
+draw=black, 
+aspect=2,
+rounded corners,
+fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+
+\usetikzlibrary{shapes.geometric, arrows, arrows.meta}
+
+
+
+
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% \ctikzset{current arrow scale=1.5} 
+\usepackage{hyperref} % Loads the hyperref package for hyperlinks
+\usepackage{enumitem}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[T1]{fontenc}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{amsfonts}
+\usepackage{mathbbol}
+
+% \catcode`_=\active
+% \def_#1{\sb{\mathrm{#1}}}
+
+
+\pgfplotsset{compat=1.18} % Set the compatibility level for pg
+\usetikzlibrary{shapes.geometric, arrows, positioning, fit, backgrounds}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    citecolor=cyan,
+    urlcolor=blue!60,
+    breaklinks=true,
+}
+
+
+
+
+
+\newcommand{\workSource}[2]{Text available at: \href{#1}{#2}}
+
+
+
+\DeclareMathSizes{12}{12}{10}{8}
+\makeatletter
+\renewcommand\normalsize{%
+\@setfontsize\normalsize{12pt}{13.5pt}% Will look incredibly crabbed if line height is too small
+\abovedisplayskip 10\p@ \@plus2\p@ \@minus5\p@%
+\abovedisplayshortskip \z@ \@plus2\p@%
+\belowdisplayshortskip 5\p@ \@plus2\p@ \@minus3\p@%
+\belowdisplayskip \abovedisplayskip%
+\let\@listi\@listI%
+}
+\normalsize  
+\makeatother
+
+\newcommand{\der}{{\rm d}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\C}{\mathcal{C}}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\G}{\mathcal{G}}
+\newcommand{\Ron}{R_{\rm ON}}
+\newcommand{\Roff}{R_{\rm OFF}}
+\newcommand{\von}{V_{\rm ON}}
+\newcommand{\voff}{V_{\rm OFF}}
+\newcommand{\q}{q}
+\newcommand{\ua}{v}
+\newcommand{\ia}{i}
+\newcommand{\phia}{\varphi}
+\newcommand{\xw}{x}
+\newcommand{\dert}[1]{\frac{{\rm d} {#1}}{{\rm d} t} }
+\newcommand{\inv}[1]{\frac{1}{#1} }
+\newcommand{\equal}{=}
+
+
+\usepackage[style=numeric, 
+            backend=biber,
+           ]{biblatex}
+           
+\addbibresource{bibliography.bib} % Replace with your .bib file name
+
+\geometry{tmargin=.75in, bmargin=.75in, lmargin=.75in, rmargin = .75in}  
+
+% \usepackage{fontspec}
+% \setmainfont[]{Palatino}
+
+\newcommand{\Cdot}{\boldsymbol{\cdot}}
+
+\newtheorem{thm}{Theorem}
+\newtheorem{defn}{Definition}
+\newtheorem{conv}{Convention}
+\newtheorem{rem}{Remark}
+\newtheorem{lem}{Lemma}
+\newtheorem{cor}{Corollary}
+
+
+\title{Reservoir computing}
+\author{Karol Bednarz}
+% \date{Rok akademicki 2024--2025}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\vspace{.25in}
+
+\newcommand{\Todo}[1]{\textcolor{red}{\textbf{TODO:} #1}}
+
+\section{Introduction}
+\Todo{
+    \begin{itemize}
+        \item Motivation: edge AI, neuromorphic computing, in-memory computation
+        \item Limitations of software RC: energy cost, latency
+        \item Memristors as natural reservoir nodes: fading memory, nonlinearity, physical dynamics
+        \item Gap: few hardware RC systems demonstrated end-to-end on classification tasks
+        \item Contribution: physical 8x8 memristor crossbar reservoir + custom MMS model + MNIST classification pipeline
+        \item Paper organization
+    \end{itemize}
+}
+
+
+\section{Background}
+\Todo{
+    Reservoir Computing
+    \begin{itemize}
+        \item RC framework: fixed reservoir, trained readout only
+        \item Key properties required: echo state property, nonlinear kernel expansion
+        \item Why physical substrates are attractive
+    \end{itemize}
+    Memristors in Neuromorphic Systems:
+    \begin{itemize}
+        \item Memristor fundamentals: pinched hysteresis, state equation
+        \item Prior work: memristor crossbars for synaptic weights, RC, and logic
+        \item Crossbar arrays: passive matrix addressing, sneak path issues
+    \end{itemize}
+}
+
+\section{Memristor Device Characterization and Modeling}
+\Todo{
+    Measurement Setup:
+    \begin{itemize}
+        \item Physical device description (material stack, crossbar geometry, e.g. 8x8)
+        \item Characterization: I-V sweeps, pulse response, variability across cells
+    \end{itemize}
+    MMS Model Development:
+    \begin{itemize}
+        \item Model formulation: state-space representation, nonlinear dynamics
+        \item Parameter extraction: from device characterization data
+        \item Model validation: comparison with experimental results
+    \end{itemize}
+}
+
+\section{Reservoir Computing System Design}
+
+\Todo{
+    Crossbar Reservoir Architecture
+    \begin{itemize}
+        \item Input encoding: voltage mapping of pixel patches / features
+        \item Reservoir topology: how crossbar columns/rows act as nodes
+        \item Readout: linear classifier (ridge regression or similar) on harvested currents
+    \end{itemize}
+    Training Protocol
+    \begin{itemize}
+        \item Only readout layer trained; reservoir weights fixed (physical)
+        \item Dataset: MNIST preprocessing (patch extraction, normalization)
+        \item Readout training: ridge regression / least-squares
+    \end{itemize}
+    Simulation Framework
+    \begin{itemize}
+        \item MMS-based SPICE or ODE simulation for design-space exploration
+        \item Correspondence between simulation and hardware measurements
+    \end{itemize}
+}
+
+\section{Experimental Results}
+\Todo{
+     Device Characterization Results - I-V curves, endurance, variability statistics \\
+     MNIST Classification Performance 
+     \begin{itemize}
+        \item Accuracy vs. baseline (software ESN, logistic regression)
+        \item Effect of reservoir size / input encoding on accuracy
+        \item Confusion matrix
+     \end{itemize}
+     Analysis
+     \begin{itemize}
+        \item Role of memristive nonlinearity and fading memory in classification
+        \item Impact of device-to-device variability (feature vs. bug)
+     \end{itemize}
+}
+
+
+\section{Discussion \& Conclusion}
+\Todo{
+\begin{itemize}
+    \item What the MMS model captures vs. misses
+    \item Scalability: path from 8×8 to larger arrays
+    \item Limitations: sneak paths, write endurance, thermal drift
+    \item Comparison with related hardware RC systems
+    \item Summary of contributions
+    \item Key result (accuracy figure)
+    \item Outlook: larger crossbars, online learning, spike-based input encoding
+\end{itemize}
+}
+
+
+
+\printbibliography
+
+\end{document}
+
