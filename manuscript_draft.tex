@@ -28,7 +28,7 @@ fill=red!30]
 trapezium stretches=true, % A later addition
 trapezium left angle=70, 
 trapezium right angle=110, 
-minimum width=3cm, 
+minimum width=3cm,      
 minimum height=1cm, text centered, 
 rounded corners,
 draw=black, fill=blue!30]
@@ -131,23 +131,7 @@ fill=green!30]
 \normalsize  
 \makeatother
 
-\newcommand{\der}{{\rm d}}
-\newcommand{\R}{\mathcal{R}}
-\newcommand{\C}{\mathcal{C}}
-\newcommand{\M}{\mathcal{M}}
-\newcommand{\G}{\mathcal{G}}
-\newcommand{\Ron}{R_{\rm ON}}
-\newcommand{\Roff}{R_{\rm OFF}}
-\newcommand{\von}{V_{\rm ON}}
-\newcommand{\voff}{V_{\rm OFF}}
-\newcommand{\q}{q}
-\newcommand{\ua}{v}
-\newcommand{\ia}{i}
-\newcommand{\phia}{\varphi}
-\newcommand{\xw}{x}
-\newcommand{\dert}[1]{\frac{{\rm d} {#1}}{{\rm d} t} }
-\newcommand{\inv}[1]{\frac{1}{#1} }
-\newcommand{\equal}{=}
+
 
 
 \usepackage[style=numeric, 
@@ -175,6 +159,10 @@ fill=green!30]
 \author{Karol Bednarz}
 % \date{Rok akademicki 2024--2025}
 \date{\today}
+
+
+
+\input{constants.tex}
 
 \begin{document}
 
@@ -215,6 +203,10 @@ fill=green!30]
 }
 
 \section{Memristor Device Characterization and Modeling}
+
+
+
+
 \Todo{
     Measurement Setup:
     \begin{itemize}
@@ -229,7 +221,51 @@ fill=green!30]
     \end{itemize}
 }
 
+
+For the simulation and design of the reservoir computing system, we use Mean Metastable Switch (MMS) memristor model introduced in~\cite{Molter2016, Minati2020}. The MMS model is a simplified representation of memristor's behavior, focusing on the average switching characteristics rather than the detailed dynamics. It captures essential features of the device by describing transitions between the high-resistance state (HRS) and the low-resistance state (LRS) based on the applied voltage. This model describes memristor's dynamics as
+
+
+\begin{align}
+  \label{eq:mms}
+  \dert{x}       & = \frac{1}{\tau} \left( f_{\rm ON}(\ua) (1-x) - f_{\rm OFF}(\ua) x \right),              \\
+  f_{\rm ON}(\ua)  & = \sigma\left(-\beta (\ua-\von)\right) \label{eq:mms5b},      \\
+  f_{\rm OFF}(\ua) & = 1 - \sigma\left(\beta (\ua-\voff)\right)  \label{eq:mms5c}, 
+\end{align}
+where \(\sigma(z) = (1+e^{-z})^{-1}\), \(\beta= \frac{q}{kT}\), \(k\) is the Boltzmann constant, \(T\) is the absolute temperature, \(q\) represents the elementary charge, while \(\von\) and \(\voff\) denote the switching voltages to LRS and HRS states, respectively. The instantaneous memductance is defined in~\eqref{eq:conductance}.
+
+\begin{equation}
+  \Gm(x) = \frac{x}{R_{\rm ON}} + \frac{1 - x}{R_{\rm OFF}},
+  \label{eq:conductance}
+\end{equation}
+
 \section{Reservoir Computing System Design}
+
+
+\subsection{Physical Circuit Implementation}
+
+The proposed physical reservoir computing (RC) system is centered on an $8 \times 8$ crossbar array of memristive devices. Within this architecture, each memristor functions as a nonlinear reservoir node, where its conductance state dynamically evolves as a function of the applied voltage and intrinsic device physics.
+
+To facilitate bidirectional communication with the crossbar array, a dedicated peripheral analog-digital interface is employed. The signal pathways and control mechanisms are defined as follows:
+\begin{itemize}
+    \item \textbf{Input Interfacing:} Input data, such as pixel intensity values from the MNIST dataset, are mapped to proportional analog voltage signals using a DAC856 digital-to-analog converter (DAC). To ensure optimal signal integrity and adequate driving strength, these voltages are subsequently buffered by OPA427 operational amplifiers before being applied to the rows of the crossbar array, systematically stimulating the memristive nodes.
+    \item \textbf{Output Readout:} The reservoir's state is evaluated by measuring the output currents from the crossbar columns. These currents are converted into measurable voltages via series-connected resistors. The resulting voltages are buffered by OPA427 operational amplifiers and digitized by an 8-channel 16-bit analog-to-digital converter (ADC) integrated within an STM32H755ZI microcontroller.
+    \item \textbf{System Control and State Initialization:} The STM32H755ZI microcontroller serves as the central processing unit, orchestrating the input encoding, temporal synchronization, and readout harvesting. Furthermore, the circuit incorporates analog single-pole single-throw (SPST) switches to systematically reset the memristor conductance states between discrete input samples, ensuring independent transient responses for each inference cycle.
+\end{itemize}
+
+
+The idealized block diagram of the system is depicted in Figure~\ref{fig:block_diagram}, illustrating the interconnections between the PC, microcontroller, crossbar array, and peripheral components.
+
+
+\begin{figure}[H]
+    \centering
+    \resizebox{0.75\textwidth}{!}{
+        \input{tex_figs/block_diagram.tex}
+    }
+    \caption{Schematic block diagram of the memristor-based reservoir computing system. The STM32H755ZI microcontroller interfaces with the DAC and ADC to drive the crossbar array and read out the reservoir states, while the PC handles data preprocessing and readout training.}
+    \label{fig:block_diagram}
+\end{figure}
+
+
 
 \Todo{
     Crossbar Reservoir Architecture

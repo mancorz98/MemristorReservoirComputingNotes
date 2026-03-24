@@ -1,0 +1,59 @@
+\begin{tikzpicture}[
+        auto,
+        block/.style = {rectangle, draw=black, thick, fill=blue!5, text width=3.2cm, align=center, rounded corners, minimum height=1.2cm},
+        mcu/.style = {rectangle, draw=black, thick, fill=gray!10, text width=10cm, align=center, rounded corners, minimum height=1.5cm},
+        crossbar/.style = {rectangle, draw=black, thick, fill=red!5, text width=3.2cm, align=center, rounded corners, minimum height=1.5cm},
+        line/.style = {draw, thick, -Latex, shorten >=1pt, shorten <=1pt},
+        doubleline/.style = {
+            draw, 
+            thick, 
+            double, 
+            double distance=3.5pt, % Slightly reduced from 5pt for a cleaner look
+            -{Implies}, 
+            shorten >=2pt, 
+            shorten <=2pt
+        }
+    ]
+
+    % --- Nodes ---
+    % Microcontroller & PC (Top)
+    \node [mcu] (stm) at (0,0) {\textbf{STM32H755ZI Microcontroller} \\ \small (System Control, Data Encoding \& Internal 16-bit ADC)};
+    
+    % Added a 1.5cm gap to prevent crowding with the STM node
+    \node (pc) [mcu, above=1.5cm of stm] {\textbf{PC} \\ \small (Image Patch Feeding \& Feature Processing)}; 
+    
+    % Input Signal Path (Left Side)
+    \node [block] (dac) at (-4.5, -2.5) {\textbf{DAC856} \\ \small (8-Channel)};
+    \node [block] (switch)  at (-4.5, -5.5) {\textbf{Reset} \\ \small (SPST Switches)};
+    \node [block] (inbuf) at (-4.5, -8.5) {\textbf{OPA427 Buffers} \\ \small (Input Driving)};
+        
+    % Reservoir Core (Center)
+    \node [crossbar] (core) at (0, -8.5) {\textbf{8x8 Memristive} \\ \textbf{Crossbar Array}};
+    
+    % Output Readout Path (Right Side)
+    \node [block] (sense) at (4.5, -8.5) {\textbf{Sense Resistors} \\ \small (I-V Conversion)};
+    \node [block] (lpf) at (4.5, -5.5) {\textbf{Low-Pass Filters} \\ \small (Passive Filters)};
+    \node [block] (outbuf) at (4.5, -2.5) {\textbf{OPA427 Buffers} \\ \small (Output Buffering)};
+
+    % --- Connections ---
+    % PC to STM (USB)
+    \draw[doubleline] (pc.south -| dac.north) -- node[left, text width=2cm, align=center] {Image Patch\\(USB)} (stm.north -| dac.north);
+    \draw[doubleline] (stm.north -| outbuf.north) -- node[right, text width=2cm, align=center] {Read Features\\(USB)} (pc.south -| outbuf.north);
+
+    % Forward Path
+    \draw [line] (stm.south -| switch.north) -- node[left] {Digital Data (SPI)} (dac.north);
+    \draw [line] (dac.south) -- node[left] {Analog $V_{in}$} (switch.north);
+    \draw [line] (switch.south) -- node[left] {Analog $V_{in}$} (inbuf.north);
+    \draw [line] (inbuf.east) -- node[above] {$V_{drive}$} (core.west);
+    
+    % Readout Path
+    \draw [line] (core.east) -- node[above] {$I_{out}$} (sense.west);
+    \draw [line] (sense.north) -- node[right] {Analog $V_{out}$} (lpf.south);
+    \draw [line] (lpf.north) -- node[right] {Filtered $v_{\mathrm{out}}$} (outbuf.south); % Changed to right and "Filtered" for clarity
+    \draw [line] (outbuf.north) -- node[right] {To ADC} (stm.south -| outbuf.north);
+    
+    % Control/Reset Path
+    % Adjusted node placement slightly to avoid crossing the digital SPI line
+    \draw [line, dashed] (stm.south) |- node[right, align=left] {SPST \\ Reset Signals} (switch.east);
+
+\end{tikzpicture}
