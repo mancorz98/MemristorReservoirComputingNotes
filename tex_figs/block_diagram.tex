@@ -42,14 +42,14 @@
 
     % Forward Path
     \draw [line] (stm.south -| switch.north) -- node[left] {Digital Data (SPI)} (dac.north);
-    \draw [line] (dac.south) -- node[left] {Analog $V_{in}$} (switch.north);
-    \draw [line] (switch.south) -- node[left] {Analog $V_{in}$} (inbuf.north);
-    \draw [line] (inbuf.east) -- node[above] {$V_{drive}$} (core.west);
+    \draw [line] (dac.south) -- node[left] {Analog $v_{ \rm in}$} (switch.north);
+    \draw [line] (switch.south) -- node[left] {Analog $v_{ \rm in}$} (inbuf.north);
+    \draw [line] (inbuf.east) -- node[above] {$v_{ \rm drive}$} (core.west);
     
     % Readout Path
-    \draw [line] (core.east) -- node[above] {$I_{out}$} (sense.west);
-    \draw [line] (sense.north) -- node[right] {Analog $V_{out}$} (lpf.south);
-    \draw [line] (lpf.north) -- node[right] {Filtered $v_{\mathrm{out}}$} (outbuf.south); % Changed to right and "Filtered" for clarity
+    \draw [line] (core.east) -- node[above] {$i_{ \rm out}$} (sense.west);
+    \draw [line] (sense.north) -- node[right] {Analog $v_{ \rm out}$} (lpf.south);
+    \draw [line] (lpf.north) -- node[right] {Filtered $v_{ \rm \mathrm{out}}$} (outbuf.south); % Changed to right and "Filtered" for clarity
     \draw [line] (outbuf.north) -- node[right] {To ADC} (stm.south -| outbuf.north);
     
     % Control/Reset Path

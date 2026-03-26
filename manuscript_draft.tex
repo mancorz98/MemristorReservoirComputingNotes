@@ -180,7 +180,7 @@ fill=green!30]
         \item Limitations of software RC: energy cost, latency
         \item Memristors as natural reservoir nodes: fading memory, nonlinearity, physical dynamics
         \item Gap: few hardware RC systems demonstrated end-to-end on classification tasks
-        \item Contribution: physical 8x8 memristor crossbar reservoir + custom MMS model + MNIST classification pipeline
+        \item Contribution: physical 8x8 memristor crossbar reservoir +  MMS model + MNIST classification pipeline
         \item Paper organization
     \end{itemize}
 }
@@ -202,7 +202,7 @@ fill=green!30]
     \end{itemize}
 }
 
-\section{Memristor Device Characterization and Modeling}
+\section{Memristor Device Modeling}
 
 
 
@@ -222,6 +222,8 @@ fill=green!30]
 }
 
 
+\subsection{Single Device Modeling with the MMS Model}
+
 For the simulation and design of the reservoir computing system, we use Mean Metastable Switch (MMS) memristor model introduced in~\cite{Molter2016, Minati2020}. The MMS model is a simplified representation of memristor's behavior, focusing on the average switching characteristics rather than the detailed dynamics. It captures essential features of the device by describing transitions between the high-resistance state (HRS) and the low-resistance state (LRS) based on the applied voltage. This model describes memristor's dynamics as
 
 
@@ -238,12 +240,62 @@ where \(\sigma(z) = (1+e^{-z})^{-1}\), \(\beta= \frac{q}{kT}\), \(k\) is the Bol
   \label{eq:conductance}
 \end{equation}
 
+where \(\Ron\) and \(\Roff\) denote the resistances in the low-resistance and high-resistance states, respectively.
+
+
+\subsection{Crossbar Array Dynamics}
+
+Consider an \(8 \times 8\) memristor crossbar array, where each device at position \((i,j)\) is described by the MMS model with individual parameters \(\{\Ron^{(i,j)}, \Roff^{(i,j)}, \von^{(i,j)}, \voff^{(i,j)}, \tau^{(i,j)}, \beta^{(i,j)}\}\). The state of the array is given by the matrix \(\mathbf{X} \in [0,1]^{8 \times 8}\), where \(x_{ij}\) represents the internal state of the memristor at row \(i\) and column \(j\).
+
+\paragraph{Memductance matrix.}
+
+The conductance of each device follows from~\eqref{eq:conductance}:
+\begin{equation}
+  G_{ij} = \frac{x_{ij}}{R_{\rm ON}^{(i,j)}} + \frac{1 - x_{ij}}{R_{\rm OFF}^{(i,j)}}.
+  \label{eq:G_matrix}
+\end{equation}
+
+
+\paragraph{Column voltages.}
+Let \(V_{\rm row,i}(t)\) denote the voltage applied to the \(i\)-th row, and \(R_{\rm s,j}\) the series resistance at the \(j\)-th column output. The total column conductance is
+\begin{equation}
+  G_{\rm col,j} = \sum_{i=1}^{8} G_{ij},
+  \label{eq:G_col}
+\end{equation}
+and the column voltage is determined by the current-divider relation
+\begin{equation}
+  V_{\rm col,j} = \frac{\displaystyle\sum_{i=1}^{8} V_{\rm row,i}\, G_{ij}}{G_{\rm col,j} + G_{\rm s,j}},
+  \label{eq:V_col}
+\end{equation}
+where \(G_{\rm s,j} = 1/R_{\rm s,j}\).
+
+\paragraph{Memristor voltage and state dynamics.}
+The voltage across each memristor is
+\begin{equation}
+  V_{ij} = V_{\rm row,i} - V_{\rm col,j},
+  \label{eq:V_mem}
+\end{equation}
+and its state evolves according to the MMS model~\eqref{eq:mms}:
+\begin{equation}
+  \dert{x_{ij}} = \frac{1}{\tau^{(i,j)}} \left( f_{\rm ON}^{(i,j)}(V_{ij})\,(1 - x_{ij}) \;-\; f_{\rm OFF}^{(i,j)}(V_{ij})\, x_{ij} \right),
+  \label{eq:crossbar_dynamics}
+\end{equation}
+with the switching functions
+\begin{align}
+  f_{\rm ON}^{(i,j)}(V_{ij})  &= \sigma\!\left(-\beta^{(i,j)} (V_{ij} - V_{\rm ON}^{(i,j)})\right), \\
+  f_{\rm OFF}^{(i,j)}(V_{ij}) &= 1 - \sigma\!\left(\beta^{(i,j)} (V_{ij} - V_{\rm OFF}^{(i,j)})\right).
+\end{align}
+
+The complete system consists of 64 coupled ODEs~\eqref{eq:crossbar_dynamics}, where the coupling arises through the column voltages~\eqref{eq:V_col}: each memristor's conductance \(G_{ij}\) influences \(V_{\rm col,j}\), which in turn determines the driving voltage \(V_{ij}\) for all devices in that column.
+
+
+
 \section{Reservoir Computing System Design}
 
 
 \subsection{Physical Circuit Implementation}
 
-The proposed physical reservoir computing (RC) system is centered on an $8 \times 8$ crossbar array of memristive devices. Within this architecture, each memristor functions as a nonlinear reservoir node, where its conductance state dynamically evolves as a function of the applied voltage and intrinsic device physics.
+The proposed physical reservoir computing (RC) system is centered on an \(8 \times 8\) crossbar array of memristive devices. Within this architecture, each memristor functions as a nonlinear reservoir node, where its conductance state dynamically evolves as a function of the applied voltage and intrinsic device physics.
 
 To facilitate bidirectional communication with the crossbar array, a dedicated peripheral analog-digital interface is employed. The signal pathways and control mechanisms are defined as follows:
 \begin{itemize}
