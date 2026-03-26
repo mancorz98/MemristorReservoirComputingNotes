@@ -292,6 +292,86 @@ The complete system consists of 64 coupled ODEs~\eqref{eq:crossbar_dynamics}, wh
 
 \section{Reservoir Computing System Design}
 
+\subsection{Patch-Based Feature Extraction for Memristor Crossbar Array Reservoir}
+
+% \subsubsection{Row-Wise Input Encoding Methodology}
+
+
+% The initial encoding strategy follows the row-wise decomposition proposed in~\autocite{Du2017}. Each 28\(\times\)28 image is partitioned into 28 row vectors, which are presented sequentially to a reservoir consisting of 28 memristive elements, one per spatial position within the row.
+
+% Pixel intensities are encoded into the temporal domain via pulse amplitude modulation. Each grayscale value \(I(i,j) \in [0, 255]\) is mapped to a voltage amplitude:
+
+% \begin{equation}
+%     V_{\text{pixel}}(i,j) = V_{\text{max}} \cdot \frac{I(i,j)}{255}
+% \end{equation}
+
+% \noindent where \(V_{\text{max}}\) denotes the maximum voltage determined by the operational range of the memristive device.
+
+% \subsubsection{Patch-Based Feature Extraction for Memristor Crossbar Array Reservoir}
+
+To overcome the limitations of row-wise encoding, proposed in~\autocite{Du2017} and to exploit the parallel computational structure of memristor crossbar arrays, a patch-based spatial decomposition is applied to the input images prior to temporal encoding. This approach maps localised spatial features onto the row inputs of the crossbar, enabling simultaneous reservoir processing across all rows.
+
+
+Given an input image \(\mathbf{I} \in \mathbb{R}^{H \times W}\), a sliding window of size \(k_h \times k_w\) with stride \(s\) extracts a set of \(N\) patches \(\mathcal{P} = \{P_1, P_2, \ldots, P_N\}\), where each patch \(P_i \in \mathbb{R}^{k_h \times k_w}\) captures a localised spatial region. The patch at grid position \((m, n)\) is given by:
+
+\begin{equation}
+    P_{m,n} = \mathbf{I}\bigl[m s : m s + k_h - 1,\; n s : n s + k_w - 1\bigr]
+\end{equation}
+
+\noindent with \(m \in \{0, 1, \ldots, \lfloor(H - k_h)/s\rfloor\}\) and \(n \in \{0, 1, \ldots, \lfloor(W - k_w)/s\rfloor\}\). For the MNIST images (\(H = W = 28\)) with kernel size \(k_h = k_w = 8\) and stride \(s = 3\), this yields a \(7 \times 7\) grid of \(N = 49\) patches per image.
+
+
+
+Each extracted patch \(P_i \in \mathbb{R}^{k_h \times k_w}\) is mapped onto the crossbar array such that each of the \(k_h\) rows of the patch drives a corresponding row input of the array. The \(r\)-th row of patch \(P_i\), denoted \(\mathbf{p}_i^{(r)} = [p_{r,1},\, p_{r,2},\, \ldots,\, p_{r,k_w}]\), is encoded as a temporal sequence of \(k_w\) voltage pulses with amplitudes proportional to the pixel intensities:
+
+\begin{equation}
+    V_r(t) = \sum_{c=1}^{k_w} p_{r,c} \cdot \Pi\!\left(\frac{t - (c-1)\,T_{\mathrm{period}}}{D \cdot T_{\mathrm{period}}}\right)
+\end{equation}
+
+\noindent where \(\Pi(\cdot)\) is the rectangular pulse function, \(T_{\mathrm{period}}\) is the pulse period, and \(D \in (0, 1]\) is the duty cycle. This encoding transforms each row of pixel values into an amplitude-modulated pulse train, preserving the spatial pixel ordering as a temporal sequence.
+
+All \(k_h\) rows of a given patch are applied simultaneously, driving the corresponding row inputs of the crossbar in parallel. At each column \(c\), the column wire accumulates current contributions from all \(k_h\) row memristors according to Kirchhoff's current law, so that the terminal state of the column memristor reflects a nonlinear integration over all row signals.
+
+The patch extraction and crossbar encoding methodology is illustrated in Fig.~\ref{fig:patch_algorithm}. An example of the temporal pulse sequence applied to the first row of the crossbar is shown in Fig.~\ref{fig:example_programming}.
+
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\textwidth]{vector_figs/Patch-algorithm.pdf}
+    \caption{Patch-based feature extraction and encoding methodology for the memristor crossbar array reservoir. Each image is decomposed into overlapping patches, and each patch row is converted into a temporal pulse train applied to the corresponding crossbar row input.}
+    \label{fig:patch_algorithm}
+\end{figure}
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\textwidth]{vector_figs/example_programming.pdf}
+    \caption{Example of the amplitude-modulated voltage pulse sequence applied to the first row of the memristor crossbar array during processing of a single patch.}
+    \label{fig:example_programming}
+\end{figure}
+
+
+
+\subsubsection{Feature Vector Construction}
+
+
+After the complete pulse sequence for patch \(P_i\) has been applied, the terminal conductance states of all \(k_w\) column memristors are read out, yielding a local feature vector:
+
+\begin{equation}
+    \mathbf{f}_i = \bigl[x_{i,1}^{\mathrm{final}},\, x_{i,2}^{\mathrm{final}},\, \ldots,\, x_{i,k_w}^{\mathrm{final}}\bigr]^T \in \mathbb{R}^{k_w}
+\end{equation}
+
+\noindent where \(x_{i,c}^{\mathrm{final}}\) denotes the terminal state of the memristor in column \(c\) after processing patch \(i\). Each column state encodes a nonlinear transformation resulting from the simultaneous integration of all row signals at that column.
+
+The global feature vector for a given image is formed by concatenating the local feature vectors from all \(N\) patches, with an appended bias term:
+
+\begin{equation}
+    \mathbf{x} = \bigl[\mathbf{f}_1^T,\, \mathbf{f}_2^T,\, \ldots,\, \mathbf{f}_N^T,\, 1\bigr]^T \in \mathbb{R}^{N k_w + 1}
+\end{equation}
+
+\noindent For the MNIST configuration (\(N = 49\) patches, \(k_w = 8\) columns), this yields a feature vector of dimensionality \(49 \times 8 + 1 = 393\).
+
+
+
 
 \subsection{Physical Circuit Implementation}
 
@@ -305,10 +385,13 @@ To facilitate bidirectional communication with the crossbar array, a dedicated p
 \end{itemize}
 
 
-The idealized block diagram of the system is depicted in Figure~\ref{fig:block_diagram}, illustrating the interconnections between the PC, microcontroller, crossbar array, and peripheral components.
+The idealized block diagram of the system is depicted in Figure~\ref{fig:block_diagram}, illustrating the interconnections between the PC, microcontroller, crossbar array, and peripheral components. 
+The PC is responsible for preprocessing the input data (e.g., extracting pixel patches from MNIST images) and training the readout layer, while the microcontroller manages the real-time control of the DAC, ADC, and reset switches to facilitate the reservoir computing operations. The design emphasizes modularity and scalability, allowing for future expansion to larger crossbar arrays and more complex input encoding schemes. The mounted circuit is depicted in Figure~\ref{fig:photo}, showcasing the physical implementation of the described architecture.
+
+In Figure~\ref{fig:workflow_diagram}, a detailed flowchart outlines the programming and readout procedure executed on the STM32 microcontroller for processing a single patch. The sequence begins with the reception of a patch via the serial interface, followed by \(N_{\rm p}\) programming cycles that apply reset and amplitude-modulated programming pulses to the memristors. After all programming pulses are applied, a read pulse is executed to measure the resulting conductance state, which is then transmitted back to the host PC for further processing and classification.
 
 
-\begin{figure}[H]
+\begin{figure}[htb!]
     \centering
     \resizebox{0.75\textwidth}{!}{
         \input{tex_figs/block_diagram.tex}
@@ -316,6 +399,124 @@ The idealized block diagram of the system is depicted in Figure~\ref{fig:block_d
     \caption{Schematic block diagram of the memristor-based reservoir computing system. The STM32H755ZI microcontroller interfaces with the DAC and ADC to drive the crossbar array and read out the reservoir states, while the PC handles data preprocessing and readout training.}
     \label{fig:block_diagram}
 \end{figure}
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[height=0.8\textwidth, angle=90]{figs/image_physical_mounted.png}
+    \caption{Photograph of the physical implementation of the memristor-based reservoir computing system, highlighting the crossbar array, peripheral circuitry, and microcontroller. \Todo{Make the photo more clear and zoomed in on the crossbar array.}}
+    \label{fig:photo}
+\end{figure}
+
+
+
+
+\begin{figure}[htb!]
+    \centering
+    \resizebox{0.3\textwidth}{!}{\input{tex_figs/workflow_diagram.tex}}
+    \caption{Flowchart of the memristor programming and readout procedure executed on the STM32 microcontroller for a single patch. Upon receiving a patch via the serial interface, the device iterates through \(N_{\rm p}\) programming cycles, each consisting of a reset pulse followed by an amplitude-modulated programming pulse corresponding to the encoded pixel intensity. After all programming pulses have been applied, a read pulse is performed to measure the resulting memristor conductance state (\(i_{\rm read}\)), which is transmitted back to the host via the serial interface.}
+    \label{fig:workflow_diagram}
+\end{figure}
+
+
+
+
+\subsection{Readout Layer Training}
+
+The readout layer is a linear map
+$\mathbf{W}_{\mathrm{out}} \in \mathbb{R}^{d \times C}$,
+where $d = Nk_w + 1$ is the dimensionality of the augmented feature vector
+(including an appended bias) and $C = 10$ is the number of classes.
+Only $\mathbf{W}_{\mathrm{out}}$ is trained; the reservoir state is determined
+entirely by the fixed physical dynamics of the memristive crossbar.
+
+Prior to training, each feature dimension $j$ is standardised
+across all $M$ training samples:
+\begin{equation}
+  \tilde{h}_{i,j} = \frac{h_{i,j} - \mu_j}{\sigma_j},
+  \qquad
+  \mu_j = \frac{1}{M}\sum_{i=1}^{M} h_{i,j},
+  \quad
+  \sigma_j = \sqrt{\frac{1}{M}\sum_{i=1}^{M}\!\left(h_{i,j}-\mu_j\right)^{\!2}},
+  \label{eq:standardisation}
+\end{equation}
+yielding the normalised feature matrix
+$\tilde{\mathbf{H}} \in \mathbb{R}^{M \times (d-1)}$,
+to which a column of ones is appended to form
+$\mathbf{H} \in \mathbb{R}^{M \times d}$.
+
+\subsubsection{Ridge Regression via SVD}
+\label{sec:ridge}
+
+Let $\mathbf{Y} \in \{0,1\}^{M \times C}$ be the one-hot encoded target matrix.
+The readout weights are obtained by minimising the $\ell_2$-regularised
+least-squares objective:
+\begin{equation}
+  \mathbf{W}_{\mathrm{out}}
+  = \arg\min_{\mathbf{W}}
+    \bigl\|\mathbf{H}\mathbf{W} - \mathbf{Y}\bigr\|_F^2
+    + \lambda\bigl\|\mathbf{W}\bigr\|_F^2,
+  \label{eq:ridge_objective}
+\end{equation}
+whose closed-form solution is
+$\mathbf{W}_{\mathrm{out}} = \!\left(\mathbf{H}^\top\mathbf{H}
++ \lambda\mathbf{I}\right)^{-1}\!\mathbf{H}^\top\mathbf{Y}$.
+
+Direct inversion is numerically unstable for ill-conditioned $\mathbf{H}$.
+Instead, the solution is computed via the thin Singular Value Decomposition
+$\mathbf{H} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top$,
+where $\mathbf{U} \in \mathbb{R}^{M \times r}$,
+$\boldsymbol{\Sigma} = \mathrm{diag}(\sigma_1,\ldots,\sigma_r)$,
+and $\mathbf{V} \in \mathbb{R}^{d \times r}$, with $r = \min(M,d)$.
+Substituting into the normal equations yields:
+\begin{equation}
+  \mathbf{W}_{\mathrm{out}}
+  = \mathbf{V}\,\mathrm{diag}\!\left(\frac{\sigma_k}{\sigma_k^2 + \lambda}\right)
+    \mathbf{U}^\top \mathbf{Y},
+  \label{eq:ridge_svd}
+\end{equation}
+which requires no explicit matrix inversion and is numerically stable for
+all $\lambda > 0$.
+
+The regularisation hyperparameter $\lambda$ is selected by
+$K$-fold cross-validation ($K = 10$).
+To avoid recomputing the SVD for each candidate $\lambda$,
+the decomposition is computed once per fold on the training partition,
+and the product $\mathbf{U}^\top\mathbf{Y}$ is cached.
+For a given $\lambda$, evaluation reduces to two matrix multiplications
+of cost $\mathcal{O}(r^2)$, making the search over $\lambda \in [10^{-1}, 10^{6}]$
+computationally negligible.
+The optimal $\lambda^*$ is located by scalar bounded minimisation
+(Brent's method) applied to the negative mean cross-validation accuracy.
+
+\subsubsection{Elastic Net Logistic Regression}
+\label{sec:elasticnet}
+
+As a comparative baseline, a multinomial logistic regression classifier with
+Elastic Net regularisation was trained on the same feature vectors.
+The optimisation problem solved for each class $c$ is:
+\begin{equation}
+  \min_{\mathbf{w}_c}
+  \left[
+    -\frac{1}{M}\sum_{i=1}^{M} \log p(y_i = c \mid \tilde{\mathbf{h}}_i;\,\mathbf{w}_c)
+    + \frac{1}{C_{\mathrm{lr}}}
+      \Bigl(\alpha\|\mathbf{w}_c\|_1
+           + \tfrac{1-\alpha}{2}\|\mathbf{w}_c\|_2^2\Bigr)
+  \right],
+  \label{eq:elasticnet}
+\end{equation}
+where $C_{\mathrm{lr}} > 0$ is the inverse regularisation strength and
+$\alpha \in [0,1]$ is the $\ell_1$ mixing ratio
+($\alpha = 0$ reduces to ridge; $\alpha = 1$ to lasso).
+The classifier is trained with the SAGA solver~\cite{defazio2014saga},
+which supports the non-smooth $\ell_1$ term while converging at a
+variance-reduced stochastic gradient rate.
+
+The hyperparameters $(C_{\mathrm{lr}}, \alpha)$ are jointly optimised using
+Optuna~\cite{akiba2019optuna} with $10$-fold cross-validation over
+50 trials on a log-uniform grid
+$C_{\mathrm{lr}} \in [10^{-5}, 10^{2}]$ and $\alpha \in [0, 1]$,
+maximising mean cross-validation accuracy.
+
 
 
 
@@ -339,7 +540,72 @@ The idealized block diagram of the system is depicted in Figure~\ref{fig:block_d
     \end{itemize}
 }
 
-\section{Experimental Results}
+
+\section{Classification Performance of the Patch-Based Reservoir}
+\subsection{Classification Accuracy}
+ 
+Table~\ref{tab:accuracy} summarises the classification accuracy achieved by both encoding
+strategies under idealised (MMS simulation) and physical (SDC hardware) conditions.
+The patch-based reservoir achieves a 26.6 percentage point improvement over the row-wise
+baseline. The 4-point simulation-to-hardware gap is attributed to device-to-device
+conductance variability, readout noise, and non-ideal switching dynamics not fully
+captured by the MMS model.
+ 
+\begin{table}[!t]
+  \renewcommand{\arraystretch}{1.3}
+  \caption{MNIST Classification Accuracy}
+  \label{tab:accuracy}
+  \centering
+  \begin{tabular}{lccc}
+    \hline
+    \bfseries Encoding & \bfseries Features & \bfseries Simulation & \bfseries Hardware \\
+    \hline
+    Row-wise (baseline)    & 28  & 60.37\% & ---  \\
+    Patch-based (proposed) & 393 & 91\%    & 87\% \\
+    \hline
+  \end{tabular}
+\end{table}
+ 
+% ---------------------------------------------------------------
+\subsection{Classification Performance of the Patch-Based Reservoir}
+ 
+The patch-based reservoir was evaluated on the MNIST test set using ridge regression as the readout layer. The system achieved a classification accuracy of 87\% in the experimental verification (compared to 91\% obtained with the idealised simulation), representing a significant improvement over the 60.37\% obtained with the row-wise encoding baseline. The 4 percentage point gap between simulation and experiment can be attributed to device-to-device variability, noise in the physical readout, and non-ideal switching dynamics of the fabricated memristors, which are not captured by the idealised MMS model.
+ 
+This performance gain can be attributed to two complementary factors. First, the patch-based decomposition preserves local two-dimensional spatial correlations that are lost under row-wise serialisation, allowing the reservoir to process spatially coherent inputs. Second, the crossbar architecture enables each column to aggregate nonlinear contributions from all rows simultaneously, producing a richer per-patch representation. The resulting 393-dimensional feature space provides the linear readout with substantially greater discriminative capacity compared to the 28-dimensional representation of the row-wise approach.
+ 
+The confusion matrix (Fig.~\ref{fig:confusion_matrix}) shows high per-class accuracy across most digit categories, with the principal misclassifications occurring between structurally similar digit pairs such as (3,\,5) and (4,\,9). This pattern is consistent with the known morphological similarity structure of the MNIST dataset and indicates that the reservoir features capture meaningful shape distinctions.
+ 
+The quality of the learned representations was further assessed by projecting the reservoir state vectors into two dimensions using t-SNE and UMAP (Fig.~\ref{fig:reservoir_embeddings}). Both embeddings exhibit well-separated, compact clusters corresponding to individual digit classes, confirming that the memristor reservoir maps the input patches into a feature space in which the class boundaries are approximately linearly separable.
+ 
+These results demonstrate that memristor crossbar arrays, combined with a patch-based spatial encoding strategy, provide an effective physical substrate for reservoir computing in pattern recognition tasks. Future work will focus on optimising the patch extraction hyperparameters, exploring alternative temporal encoding schemes such as frequency modulation, and evaluating the scalability of the architecture to higher-resolution datasets and more complex classification problems.
+ 
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.4\textwidth]{results/confusion_matrix.pdf}
+    \caption{Confusion matrix for the patch-based memristor reservoir classifier on the MNIST test set. Diagonal elements indicate correct classifications; off-diagonal elements represent misclassifications.}
+    \label{fig:confusion_matrix}
+\end{figure}
+ 
+\begin{figure}[htb!]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{results/tsne_reservoir.pdf}
+        \caption{t-SNE projection}
+        \label{fig:tsne_reservoir}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{results/umap_reservoir.pdf}
+        \caption{UMAP projection}
+        \label{fig:umap_reservoir}
+    \end{subfigure}
+    \caption{Two-dimensional embeddings of the reservoir feature vectors for the MNIST test set, computed via (a)~t-SNE and (b)~UMAP. Each point represents a single sample, coloured by digit class. The well-defined cluster structure confirms approximate linear separability of the reservoir representations.}
+    \label{fig:reservoir_embeddings}
+\end{figure}
+ 
+ 
 \Todo{
      Device Characterization Results - I-V curves, endurance, variability statistics \\
      MNIST Classification Performance 

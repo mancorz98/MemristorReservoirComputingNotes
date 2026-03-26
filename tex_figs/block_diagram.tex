@@ -28,7 +28,9 @@
     \node [block] (inbuf) at (-4.5, -8.5) {\textbf{OPA427 Buffers} \\ \small (Input Driving)};
         
     % Reservoir Core (Center)
-    \node [crossbar] (core) at (0, -8.5) {\textbf{8x8 Memristive} \\ \textbf{Crossbar Array}};
+    \node [crossbar] (core) at (0, -8.5) {\textbf{8x8 Memristive} \\ \textbf {Crossbar Array} \\   \begin{circuitikz}
+    \draw (0,0) to[memristor] (2,0);
+  \end{circuitikz}};
     
     % Output Readout Path (Right Side)
     \node [block] (sense) at (4.5, -8.5) {\textbf{Sense Resistors} \\ \small (I-V Conversion)};
