@@ -187,20 +187,20 @@ fill=green!30]
 
 
 \section{Background}
-\Todo{
-    Reservoir Computing
-    \begin{itemize}
-        \item RC framework: fixed reservoir, trained readout only
-        \item Key properties required: echo state property, nonlinear kernel expansion
-        \item Why physical substrates are attractive
-    \end{itemize}
-    Memristors in Neuromorphic Systems:
-    \begin{itemize}
-        \item Memristor fundamentals: pinched hysteresis, state equation
-        \item Prior work: memristor crossbars for synaptic weights, RC, and logic
-        \item Crossbar arrays: passive matrix addressing, sneak path issues
-    \end{itemize}
-}
+% \Todo{
+%     Reservoir Computing
+%     \begin{itemize}
+%         \item RC framework: fixed reservoir, trained readout only
+%         \item Key properties required: echo state property, nonlinear kernel expansion
+%         \item Why physical substrates are attractive
+%     \end{itemize}
+%     Memristors in Neuromorphic Systems:
+%     \begin{itemize}
+%         \item Memristor fundamentals: pinched hysteresis, state equation
+%         \item Prior work: memristor crossbars for synaptic weights, RC, and logic
+%         \item Crossbar arrays: passive matrix addressing, sneak path issues
+%     \end{itemize}
+% }
 
 \subsection{Reservoir Computing}
 
@@ -376,19 +376,19 @@ subject of this paper.
 
 
 
-\Todo{
-    Measurement Setup:
-    \begin{itemize}
-        \item Physical device description (material stack, crossbar geometry, e.g. 8x8)
-        \item Characterization: I-V sweeps, pulse response, variability across cells
-    \end{itemize}
-    MMS Model Development:
-    \begin{itemize}
-        \item Model formulation: state-space representation, nonlinear dynamics
-        \item Parameter extraction: from device characterization data
-        \item Model validation: comparison with experimental results
-    \end{itemize}
-}
+% \Todo{
+%     Measurement Setup:
+%     \begin{itemize}
+%         \item Physical device description (material stack, crossbar geometry, e.g. 8x8)
+%         \item Characterization: I-V sweeps, pulse response, variability across cells
+%     \end{itemize}
+%     MMS Model Development:
+%     \begin{itemize}
+%         \item Model formulation: state-space representation, nonlinear dynamics
+%         \item Parameter extraction: from device characterization data
+%         \item Model validation: comparison with experimental results
+%     \end{itemize}
+% }
 
 
 \subsection{Single Device Modeling with the MMS Model}
@@ -689,25 +689,25 @@ maximising mean cross-validation accuracy.
 
 
 
-\Todo{
-    Crossbar Reservoir Architecture
-    \begin{itemize}
-        \item Input encoding: voltage mapping of pixel patches / features
-        \item Reservoir topology: how crossbar columns/rows act as nodes
-        \item Readout: linear classifier (ridge regression or similar) on harvested currents
-    \end{itemize}
-    Training Protocol
-    \begin{itemize}
-        \item Only readout layer trained; reservoir weights fixed (physical)
-        \item Dataset: MNIST preprocessing (patch extraction, normalization)
-        \item Readout training: ridge regression / least-squares
-    \end{itemize}
-    Simulation Framework
-    \begin{itemize}
-        \item MMS-based SPICE or ODE simulation for design-space exploration
-        \item Correspondence between simulation and hardware measurements
-    \end{itemize}
-}
+% \Todo{
+%     Crossbar Reservoir Architecture
+%     \begin{itemize}
+%         \item Input encoding: voltage mapping of pixel patches / features
+%         \item Reservoir topology: how crossbar columns/rows act as nodes
+%         \item Readout: linear classifier (ridge regression or similar) on harvested currents
+%     \end{itemize}
+%     Training Protocol
+%     \begin{itemize}
+%         \item Only readout layer trained; reservoir weights fixed (physical)
+%         \item Dataset: MNIST preprocessing (patch extraction, normalization)
+%         \item Readout training: ridge regression / least-squares
+%     \end{itemize}
+%     Simulation Framework
+%     \begin{itemize}
+%         \item MMS-based SPICE or ODE simulation for design-space exploration
+%         \item Correspondence between simulation and hardware measurements
+%     \end{itemize}
+% }
 
 
 \section{Classification Performance of the Patch-Based Reservoir}
@@ -775,20 +775,20 @@ These results demonstrate that memristor crossbar arrays, combined with a patch-
 \end{figure}
  
  
-\Todo{
-     Device Characterization Results - I-V curves, endurance, variability statistics \\
-     MNIST Classification Performance 
-     \begin{itemize}
-        \item Accuracy vs. baseline (software ESN, logistic regression)
-        \item Effect of reservoir size / input encoding on accuracy
-        \item Confusion matrix
-     \end{itemize}
-     Analysis
-     \begin{itemize}
-        \item Role of memristive nonlinearity and fading memory in classification
-        \item Impact of device-to-device variability (feature vs. bug)
-     \end{itemize}
-}
+% \Todo{
+%      Device Characterization Results - I-V curves, endurance, variability statistics \\
+%      MNIST Classification Performance 
+%      \begin{itemize}
+%         \item Accuracy vs. baseline (software ESN, logistic regression)
+%         \item Effect of reservoir size / input encoding on accuracy
+%         \item Confusion matrix
+%      \end{itemize}
+%      Analysis
+%      \begin{itemize}
+%         \item Role of memristive nonlinearity and fading memory in classification
+%         \item Impact of device-to-device variability (feature vs. bug)
+%      \end{itemize}
+% }
 
 
 \section{Discussion \& Conclusion}

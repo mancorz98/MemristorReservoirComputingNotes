@@ -13,7 +13,7 @@ jobs:
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v4
         with:
-          root_file: main_en.tex
+          root_file: manuscript_draft.tex
           latexmk_shell_escape: true
           os: debian
 
@@ -21,14 +21,14 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: PDF
-          path: main_en.pdf
+          path: manuscript_draft.pdf
 
       - name: Upload to orphan branch
         run: |
           DATE=$(date +"%Y-%m-%d %H:%M:%S")
-          PDF_PATH="${PWD}/main_en.pdf"
+          PDF_PATH="${PWD}/manuscript_draft.pdf"
           COMMIT_MSG="${{ github.event.head_commit.message }}"
-          cp main_en.pdf /tmp/manuscript.pdf
+          cp manuscript_draft.pdf /tmp/manuscript.pdf
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
@@ -53,5 +53,5 @@ jobs:
         with:
           tag_name: ${{ env.TAG }}
           name: Build ${{ env.TAG }}
-          files: main_en.pdf
+          files: manuscript_draft.pdf
           make_latest: true
