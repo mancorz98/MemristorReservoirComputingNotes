@@ -202,6 +202,175 @@ fill=green!30]
     \end{itemize}
 }
 
+\subsection{Reservoir Computing}
+
+ 
+Reservoir computing (RC) is a recurrent neural network framework in which a
+fixed, high-dimensional dynamical system --- the \emph{reservoir} --- projects
+input signals into a rich feature space, while only a linear readout layer is
+trained~\autocite{Lukoeviius2009}.
+This separation of dynamics and learning dramatically reduces training cost
+compared to fully trained recurrent networks, making RC attractive for
+edge and neuromorphic deployments.
+ 
+\subsubsection{General Formulation}
+ 
+The reservoir state at discrete time step \(n\) evolves as:
+\begin{equation}
+  \mathbf{r}(n) = F\!\bigl(
+    \gamma\,\mathbf{W}_{\mathrm{in}}\,\mathbf{x}(n)
+    + \beta\,\mathbf{W}\,\mathbf{r}(n-1)
+  \bigr),
+  \label{eq:rc_state}
+\end{equation}
+where \(\mathbf{x}(n) \in \mathbb{R}^{d}\) is the input,
+\(\mathbf{r}(n) \in \mathbb{R}^{N}\) is the reservoir state,
+\(\mathbf{W}_{\mathrm{in}} \in \mathbb{R}^{N \times d}\) and
+\(\mathbf{W} \in \mathbb{R}^{N \times N}\) are the fixed input and recurrent
+weight matrices, \(\gamma, \beta \in \mathbb{R}^{+}\) are scaling parameters,
+and \(F : \mathbb{R}^{N} \to \mathbb{R}^{N}\) is a nonlinear activation
+(typically \(\tanh\)).
+The trained output is a linear function of the reservoir state:
+\begin{equation}
+  \mathbf{y}(n) = \mathbf{W}_{\mathrm{out}}\,\mathbf{r}(n),
+  \label{eq:rc_output}
+\end{equation}
+where \(\mathbf{W}_{\mathrm{out}} \in \mathbb{R}^{p \times N}\) is the sole
+trainable parameter matrix, obtained by regularised least-squares regression
+over a collected state matrix~\autocite{Jaeger2004}.
+ 
+\subsubsection{Echo State Property and Spectral Radius}
+ 
+For the readout to reconstruct any input-driven trajectory, the reservoir
+must satisfy the \emph{echo state property}: its state must eventually depend
+only on the driving input, not on initial conditions~\autocite{Jaeger2001}.
+A necessary practical condition is that the spectral radius
+\(\rho(\mathbf{W}) < 1\).
+In the Echo State Network (ESN) paradigm, the recurrent matrix is
+initialised with entries drawn uniformly from \([-1, 1]\) and then rescaled:
+\begin{equation}
+  \mathbf{W}^{\dagger}
+  = \frac{\rho\,\mathbf{W}}{|\lambda_{\max}(\mathbf{W})|},
+  \label{eq:spectral_scaling}
+\end{equation}
+where \(\rho \in (0,1)\) is the target spectral radius, typically chosen in
+\([0.9, 1)\)~\autocite{Bai2023}.
+The sparsity of \(\mathbf{W}\) is controlled by a coefficient
+\(\alpha \in (0,1)\), typically \(\alpha \in [0.1, 0.3]\), which masks a
+fraction of weights to zero before rescaling.
+ 
+\subsubsection{Fading Memory and Memory Capacity}
+ 
+The fading memory property --- that the influence of past inputs on the
+current reservoir state decays over time --- is a prerequisite for stable
+computation.
+It is quantified by the memory capacity:
+\begin{equation}
+  MC = \sum_{k=1}^{\infty} MC_k
+     = \sum_{k=1}^{\infty}
+       \frac{\mathrm{cov}^2(u_{t-k},\,y_t)}
+            {\sigma^2(u_t)\,\sigma^2(y_t)},
+  \label{eq:mc}
+\end{equation}
+where \(MC_k\) measures the squared correlation between the output \(y_t\) and
+the input delayed by \(k\) steps~\autocite{Jaeger2001}.
+A large memory capacity, achievable in the asymptotically stable regime,
+is essential for tasks with long temporal dependencies.
+ 
+% -----------------------------------------------------------------
+\subsection{Echo State Networks}
+ 
+The Echo State Network (ESN) is the most widely studied RC instantiation for
+continuous-valued time series~\autocite{Jaeger2004}.
+In the leaky-integrator ESN the state update incorporates a leak rate
+\(\kappa \in (0,1]\):
+\begin{equation}
+  \mathbf{h}_t = f\!\bigl(
+    (1-\kappa)\,\mathbf{W}_{\mathrm{in}}\,\mathbf{u}_t
+    + \kappa\,\mathbf{W}_h\,\mathbf{h}_{t-1}
+    + \mathbf{W}_{1b}\,\mathbf{y}_{t-1}
+    + \mathbf{b}
+  \bigr),
+  \label{eq:esn}
+\end{equation}
+where \(\mathbf{u}_t\) is the input, \(\mathbf{y}_{t-1}\) is the optional
+output feedback, \(\mathbf{W}_{1b}\) is the feedback weight matrix,
+and \(\mathbf{b}\) is the bias vector~\autocite{Bai2023}.
+The leak rate \(\kappa\) controls the effective time constant of the reservoir
+neurons, typically set in \([0.1, 0.3]\).
+ 
+% -----------------------------------------------------------------
+\subsection{Next-Generation Reservoir Computing}
+ 
+Next-Generation RC (NG-RC), proposed by Gauthier et al.~\autocite{Gauthier2021},
+eliminates the recurrent network entirely by replacing the reservoir state with
+an explicit feature vector constructed from time-delayed observations and their
+polynomial nonlinear functionals.
+The linear feature vector at step \(i\) concatenates \(k\) delay-embedded copies
+of the \(d\)-dimensional input:
+\begin{equation}
+  \mathbf{O}_{\mathrm{lin},i}
+  = \mathbf{X}_i \oplus \mathbf{X}_{i-s} \oplus \cdots
+    \oplus \mathbf{X}_{i-(k-1)s},
+  \label{eq:ngrc_linear}
+\end{equation}
+and a quadratic nonlinear complement is formed from the unique monomials of
+the outer product:
+\begin{equation}
+  \mathbf{O}^{(2)}_{\mathrm{nonlin}}
+  = \mathbf{O}_{\mathrm{lin}} \lceil\!\otimes\!\rceil\,
+    \mathbf{O}_{\mathrm{lin}},
+  \label{eq:ngrc_nonlinear}
+\end{equation}
+yielding a total feature vector
+\(\mathbf{O}_{\mathrm{total}} = c\cdot\mathbf{O}_{\mathrm{lin}}
+\oplus \mathbf{O}^{(2)}_{\mathrm{nonlin}}\)~\autocite{Gauthier2021}.
+The output weights are trained by the same Tikhonov-regularised
+least-squares as in standard RC.
+The NG-RC warm-up period requires only \(sk\) time steps, and low-order
+polynomial functionals are sufficient in practice due to rapid convergence
+of the underlying Volterra series.
+ 
+% -----------------------------------------------------------------
+\subsection{Memristors in Reservoir Computing}
+ 
+Memristive devices are compelling physical substrates for reservoir computing
+owing to their intrinsic nonlinearity, history-dependent conductance, and
+nanoscale form factor --- properties that directly fulfil the theoretical
+requirements of a rich, high-dimensional reservoir with fading memory.
+ 
+The seminal demonstration by Du et al.~\autocite{Du2017} established
+memristors as viable reservoir nodes for temporal pattern recognition.
+In that work, a small array of WO\textsubscript{x} memristors was driven
+by amplitude-modulated pulse streams, with each memristor's conductance
+serving as a reservoir state.
+The system achieved 88.1\% accuracy on MNIST using 88 memristors,
+demonstrating that volatile memristive dynamics can substitute for the
+recurrent connectivity of a software ESN.
+A key architectural feature of that and related
+works~\autocite{Du2017,Hwang2025} is that the memristors are addressed
+\emph{sequentially} along each row of an input image: the image is
+serialised into a one-dimensional temporal stream and the reservoir is
+driven by a single column of devices.
+Consequently, the spatial correlations present in the two-dimensional
+image are not exploited by the physical substrate; the reservoir
+operates purely on the temporal sequence of pixel values.
+ 
+The present work departs from this convention in a critical respect.
+Rather than serialising the input into a one-dimensional stream,
+we exploit the inherent \emph{parallel} structure of a memristor
+\textbf{crossbar array}.
+Each row of the crossbar is driven simultaneously by a distinct
+voltage encoding a spatial patch of the input image,
+and each column accumulates the nonlinear contributions from all rows
+concurrently via Kirchhoff's current law.
+This architecture enables the reservoir to process spatially coherent,
+two-dimensional input structure in a single forward pass through the
+crossbar, a modality not explored in prior memristor RC demonstrations.
+The implications of this architectural choice for encoding strategy,
+feature dimensionality, and classification performance are the central
+subject of this paper.
+
 \section{Memristor Device Modeling}
 
 
@@ -423,14 +592,14 @@ In Figure~\ref{fig:workflow_diagram}, a detailed flowchart outlines the programm
 \subsection{Readout Layer Training}
 
 The readout layer is a linear map
-$\mathbf{W}_{\mathrm{out}} \in \mathbb{R}^{d \times C}$,
-where $d = Nk_w + 1$ is the dimensionality of the augmented feature vector
-(including an appended bias) and $C = 10$ is the number of classes.
-Only $\mathbf{W}_{\mathrm{out}}$ is trained; the reservoir state is determined
+\(\mathbf{W}_{\mathrm{out}} \in \mathbb{R}^{d \times C}\),
+where \(d = Nk_w + 1\) is the dimensionality of the augmented feature vector
+(including an appended bias) and \(C = 10\) is the number of classes.
+Only \(\mathbf{W}_{\mathrm{out}}\) is trained; the reservoir state is determined
 entirely by the fixed physical dynamics of the memristive crossbar.
 
-Prior to training, each feature dimension $j$ is standardised
-across all $M$ training samples:
+Prior to training, each feature dimension \(j\) is standardised
+across all \(M\) training samples:
 \begin{equation}
   \tilde{h}_{i,j} = \frac{h_{i,j} - \mu_j}{\sigma_j},
   \qquad
@@ -440,15 +609,15 @@ across all $M$ training samples:
   \label{eq:standardisation}
 \end{equation}
 yielding the normalised feature matrix
-$\tilde{\mathbf{H}} \in \mathbb{R}^{M \times (d-1)}$,
+\(\tilde{\mathbf{H}} \in \mathbb{R}^{M \times (d-1)}\),
 to which a column of ones is appended to form
-$\mathbf{H} \in \mathbb{R}^{M \times d}$.
+\(\mathbf{H} \in \mathbb{R}^{M \times d}\).
 
 \subsubsection{Ridge Regression via SVD}
 \label{sec:ridge}
 
-Let $\mathbf{Y} \in \{0,1\}^{M \times C}$ be the one-hot encoded target matrix.
-The readout weights are obtained by minimising the $\ell_2$-regularised
+Let \(\mathbf{Y} \in \{0,1\}^{M \times C}\) be the one-hot encoded target matrix.
+The readout weights are obtained by minimising the \(\ell_2\)-regularised
 least-squares objective:
 \begin{equation}
   \mathbf{W}_{\mathrm{out}}
@@ -458,15 +627,15 @@ least-squares objective:
   \label{eq:ridge_objective}
 \end{equation}
 whose closed-form solution is
-$\mathbf{W}_{\mathrm{out}} = \!\left(\mathbf{H}^\top\mathbf{H}
-+ \lambda\mathbf{I}\right)^{-1}\!\mathbf{H}^\top\mathbf{Y}$.
+\(\mathbf{W}_{\mathrm{out}} = \!\left(\mathbf{H}^\top\mathbf{H}
++ \lambda\mathbf{I}\right)^{-1}\!\mathbf{H}^\top\mathbf{Y}\).
 
-Direct inversion is numerically unstable for ill-conditioned $\mathbf{H}$.
+Direct inversion is numerically unstable for ill-conditioned \(\mathbf{H}\).
 Instead, the solution is computed via the thin Singular Value Decomposition
-$\mathbf{H} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top$,
-where $\mathbf{U} \in \mathbb{R}^{M \times r}$,
-$\boldsymbol{\Sigma} = \mathrm{diag}(\sigma_1,\ldots,\sigma_r)$,
-and $\mathbf{V} \in \mathbb{R}^{d \times r}$, with $r = \min(M,d)$.
+\(\mathbf{H} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top\),
+where \(\mathbf{U} \in \mathbb{R}^{M \times r}\),
+\(\boldsymbol{\Sigma} = \mathrm{diag}(\sigma_1,\ldots,\sigma_r)\),
+and \(\mathbf{V} \in \mathbb{R}^{d \times r}\), with \(r = \min(M,d)\).
 Substituting into the normal equations yields:
 \begin{equation}
   \mathbf{W}_{\mathrm{out}}
@@ -475,17 +644,17 @@ Substituting into the normal equations yields:
   \label{eq:ridge_svd}
 \end{equation}
 which requires no explicit matrix inversion and is numerically stable for
-all $\lambda > 0$.
+all \(\lambda > 0\).
 
-The regularisation hyperparameter $\lambda$ is selected by
-$K$-fold cross-validation ($K = 10$).
-To avoid recomputing the SVD for each candidate $\lambda$,
+The regularisation hyperparameter \(\lambda\) is selected by
+\(K\)-fold cross-validation (\(K = 10\)).
+To avoid recomputing the SVD for each candidate \(\lambda\),
 the decomposition is computed once per fold on the training partition,
-and the product $\mathbf{U}^\top\mathbf{Y}$ is cached.
-For a given $\lambda$, evaluation reduces to two matrix multiplications
-of cost $\mathcal{O}(r^2)$, making the search over $\lambda \in [10^{-1}, 10^{6}]$
+and the product \(\mathbf{U}^\top\mathbf{Y}\) is cached.
+For a given \(\lambda\), evaluation reduces to two matrix multiplications
+of cost \(\mathcal{O}(r^2)\), making the search over \(\lambda \in [10^{-1}, 10^{6}]\)
 computationally negligible.
-The optimal $\lambda^*$ is located by scalar bounded minimisation
+The optimal \(\lambda^*\) is located by scalar bounded minimisation
 (Brent's method) applied to the negative mean cross-validation accuracy.
 
 \subsubsection{Elastic Net Logistic Regression}
@@ -493,7 +662,7 @@ The optimal $\lambda^*$ is located by scalar bounded minimisation
 
 As a comparative baseline, a multinomial logistic regression classifier with
 Elastic Net regularisation was trained on the same feature vectors.
-The optimisation problem solved for each class $c$ is:
+The optimisation problem solved for each class \(c\) is:
 \begin{equation}
   \min_{\mathbf{w}_c}
   \left[
@@ -504,17 +673,17 @@ The optimisation problem solved for each class $c$ is:
   \right],
   \label{eq:elasticnet}
 \end{equation}
-where $C_{\mathrm{lr}} > 0$ is the inverse regularisation strength and
-$\alpha \in [0,1]$ is the $\ell_1$ mixing ratio
-($\alpha = 0$ reduces to ridge; $\alpha = 1$ to lasso).
+where \(C_{\mathrm{lr}} > 0\) is the inverse regularisation strength and
+\(\alpha \in [0,1]\) is the \(\ell_1\) mixing ratio
+(\(\alpha = 0\) reduces to ridge; \(\alpha = 1\) to lasso).
 The classifier is trained with the SAGA solver~\cite{defazio2014saga},
-which supports the non-smooth $\ell_1$ term while converging at a
+which supports the non-smooth \(\ell_1\) term while converging at a
 variance-reduced stochastic gradient rate.
 
-The hyperparameters $(C_{\mathrm{lr}}, \alpha)$ are jointly optimised using
-Optuna~\cite{akiba2019optuna} with $10$-fold cross-validation over
+The hyperparameters \((C_{\mathrm{lr}}, \alpha)\) are jointly optimised using
+Optuna~\cite{akiba2019optuna} with \(10\)-fold cross-validation over
 50 trials on a log-uniform grid
-$C_{\mathrm{lr}} \in [10^{-5}, 10^{2}]$ and $\alpha \in [0, 1]$,
+\(C_{\mathrm{lr}} \in [10^{-5}, 10^{2}]\) and \(\alpha \in [0, 1]\),
 maximising mean cross-validation accuracy.
 
 
