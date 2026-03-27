@@ -53,5 +53,7 @@ jobs:
         with:
           tag_name: ${{ env.TAG }}
           name: Build ${{ env.TAG }}
-          files: manuscript_draft.pdf
+          files: |
+            manuscript_draft.pdf
+            main_en.pdf
           make_latest: true
